@@ -22,12 +22,31 @@
 'use strict';
 
 /**
- * General housekeeping, reading test cases from test directory, etc.
+ * Node dependencies
  **/
 
 const fs = require('fs');
 
 const path = require('path');
+
+/**
+ * Here, the function to test our sets (PWC solution)
+ **/
+
+function isDisjoint(set1 = [], set2 = []) {
+  const testSet = [...set1];
+
+  let disjoint = true;
+  while (disjoint && testSet.length) {
+    const test = testSet.pop();
+    if (set2.includes(test)) disjoint = false;
+  }
+  return disjoint;
+}
+
+/**
+ * Followed by some utilities to test our solution
+ **/
 
 const isFile = (filePath) => fs.lstatSync(filePath).isFile();
 
@@ -64,15 +83,17 @@ function listToArray(str) {
 }
 
 function assertDisjoint([set1, set2, test]) {
-  console.log(set1);
-  console.log(set2);
-  console.log(test);
-  console.log(isDisjoint(set1, set2));
-  if (isDisjoint(set1, set2) === test) {
+  const disjoint = isDisjoint(set1, set2);
+
+  if (disjoint === test) {
     return console.log('\x1b[32m%s\x1b[0m', 'Passed \u2690');
   }
-  console.log('\x1b[31m%s\x1b[0m', 'Failed \u274c');
+  return console.log('\x1b[31m%s\x1b[0m', 'Failed \u274c');
 }
+
+/**
+ * And, our test runner
+ **/
 
 (function main() {
   const testPath = process.argv[2] || './task1_test_cases';
@@ -102,15 +123,3 @@ function assertDisjoint([set1, set2, test]) {
     console.log('Something went wrong: ', error);
   }
 })();
-/**
- * Here, the function to test our sets
- **/
-
-function isDisjoint(set1 = [], set2 = []) {
-  let disjoint = true;
-  while (disjoint && set1.length) {
-    const test = set1.pop();
-    if (set2.includes(test)) disjoint = false;
-  }
-  return disjoint;
-}
