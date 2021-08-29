@@ -25,6 +25,8 @@
 use strict;
 use warnings;
 use utf8;
+use open ":std", ":encoding(UTF-8)";
+use Term::ANSIColor;
 
 # Here, our subroutine to test our sets (PWC solution)
 
@@ -49,7 +51,7 @@ sub parse_test_case {
   my $test = "";
 
   open my $fh, "<", $filename
-    or die "Could not open '$filename' - $!";
+    or die "Could not open '$filename' - $!\n";
 
   while (my $line = <$fh>) {
     chomp $line;
@@ -63,10 +65,11 @@ sub parse_test_case {
       next;
     }
     if ($line eq "1" || $line eq "0") {
-      $test = $line;
+      $test = int($line);
       last;
     }
   }
+  close $fh;
   my @first_set = split /\s*,\s*/, $first_line;
   my @second_set = split /\s*,\s*/, $second_line;
 
@@ -74,30 +77,44 @@ sub parse_test_case {
 }
 
 sub assert_disjoint {
-  my ($set1_ref, $set2_ref, $test);
-
+  my ($set1_ref, $set2_ref, $test) = @_;
+  my $disjoint = is_disjoint($set1_ref, $set2_ref);
+  if ($test eq $disjoint) {
+    print color("green"), "Passed \x{2690}\n", color("reset");
+  } else {
+    print color("red"), "Failed \x{2715}\n", color("reset");
+  }
 }
 
-my @tests = ();
+# And our test runner
 
-my $target = shift @ARGV;
+sub main {
+  my $target = shift @ARGV // "../test_cases/ch1";
 
-my @set1 = (1, 2, 3, 4, 5);
-my @set2 = (4, 7, 8, 9);
-my @set3 = (1, 2, 3);
+  if (-e -r -f $target) {                # handle file target
+    my ($set1_ref, $set2_ref, $test) = parse_test_case $target;
 
-print is_disjoint(\@set1, \@set1), "\n";
-print is_disjoint(\@set2, \@set3), "\n";
+    print $target, ": ";
+    assert_disjoint $set1_ref, $set2_ref, $test;
+    return;
+  } elsif (-e -r -d _) {               # handle directory target
+    $target =~ s/^(.*?)\/?$/$1\//;     # check for trailing slash
+    opendir my $dh, $target
+      or die "Could not open '$target' - $!\n";
+    my @entries = readdir $dh;
+    foreach my $entry (@entries) {
+      if ($entry eq '.' or $entry eq '..') {
+        next;
+      }
+      my $path = $target . $entry;
+      my ($set1_ref, $set2_ref, $test) = parse_test_case $path;
+      print $path, ": ";
+      assert_disjoint $set1_ref, $set2_ref, $test;
+    }
+    closedir $dh
+  } else {
+    print "No test files found\n";
+  }
+}
 
-my ($set1_ref, $set2_ref, $test1) =
-  parse_test_case('./task1_test_cases/case1.txt');
-
-my ($set3_ref, $set4_ref, $test2) =
-  parse_test_case('./task1_test_cases/case2.txt');
-
-print @$set1_ref, "\n";
-print @$set2_ref, "\n";
-print $test1, "\n";
-print @$set3_ref, "\n";
-print @$set4_ref, "\n";
-print $test2, "\n";
+main();

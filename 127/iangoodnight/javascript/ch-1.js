@@ -34,12 +34,12 @@ const path = require('path');
  **/
 
 function isDisjoint(set1 = [], set2 = []) {
-  const testSet = [...set1];
+  const testSet = [...set1];           // shallow copy of the first set
 
-  let disjoint = true;
+  let disjoint = true;                 // trust, but verify
   while (disjoint && testSet.length) {
     const test = testSet.pop();
-    if (set2.includes(test)) disjoint = false;
+   if (set2.includes(test)) disjoint = false;
   }
   return disjoint;
 }
@@ -82,13 +82,15 @@ function listToArray(str) {
   return str.split(',').map(el => el.trim());
 }
 
-function assertDisjoint([set1, set2, test]) {
+function assertDisjoint([set1, set2, test], filePath = '') {
   const disjoint = isDisjoint(set1, set2);
 
+  const testPath = filePath !== '' ? `${filePath}: `: '';
+
   if (disjoint === test) {
-    return console.log('\x1b[32m%s\x1b[0m', 'Passed \u2690');
+    return console.log(`${testPath}\x1b[32m%s\x1b[0m`, 'Passed \u2690');
   }
-  return console.log('\x1b[31m%s\x1b[0m', 'Failed \u274c');
+  return console.log(`${testPath}\x1b[31m%s\x1b[0m`, 'Failed \u2715');
 }
 
 /**
@@ -96,15 +98,13 @@ function assertDisjoint([set1, set2, test]) {
  **/
 
 (function main() {
-  const testPath = process.argv[2] || './task1_test_cases';
-
-  const tests = [];
+  const testPath = process.argv[2] || '../test_cases/ch1';
 
   try {
     if (isFile(testPath)) {
       const test = parseTestCase(data);
 
-      tests.push(test);
+      return assertDisjoint(test, testPath);
     }
     if (isDirectory(testPath)) {
       fs.readdirSync(testPath).map(fileName => {
@@ -112,13 +112,11 @@ function assertDisjoint([set1, set2, test]) {
 
         const test = parseTestCase(filePath);
 
-        tests.push(test);
+        assertDisjoint(test, filePath);
       });
+      return;
     }
-    if (tests.length === 0) return console.log('No tests found');
-    for (const test of tests) {
-      assertDisjoint(test);
-    }
+    return 'No tests found';
   } catch (error) {
     console.log('Something went wrong: ', error);
   }
