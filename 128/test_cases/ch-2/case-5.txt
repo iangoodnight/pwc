@@ -1,0 +1,5 @@
+# Case 5
+# Overlapping arrivals and departures, strange formatting
+11, 12:30 PM, 1 PM, 2PM, 2:30 PM
+12:30PM, 2:30 PM, 2:35PM, 3 PM, 15:02
+4
