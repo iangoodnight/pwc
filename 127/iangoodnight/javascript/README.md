@@ -2,8 +2,8 @@
 # Perl Weekly Challenge Club - 127
 
 This is my first time submitting!  I had a lot of fun and it was a good excuse
-to work on my Perl.  I spend most of my time working with Javascript, so I
-started out by writing a solution Javascript.
+to work on my Perl.  I spend most of my time working with JavaScript, so I
+started out by writing a solution in JavaScript.
 
 ## Task 1 > Disjoint Sets
 
