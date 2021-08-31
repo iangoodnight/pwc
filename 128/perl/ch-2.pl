@@ -41,7 +41,6 @@ use warnings;
 use utf8;
 use open ":std", ":encoding(UTF-8)";
 use Term::ANSIColor;
-use Data::Dumper;
 
 # Here, the subroutine to identify how many platforms are required (PWC
 # Solution) along with a helper subroutine, parseTime, to make our solution a 
@@ -50,12 +49,19 @@ use Data::Dumper;
 sub parse_time {
   my $time = shift;
 
-  $time =~ /^\s*(\d{1,2}):?(\d{1,2}?) ?([ap]m)?\s*$/i; 
-  my $hours = int($1);
-  my $minutes = int($2) // 0;
+  $time =~ /^\s*(\d+):?(\d*) ?([ap]m)?\s*$/i; 
+
+  my $hours = int($1) // 0;
+
+  my $minutes = 0;
+  if ($2 ne "") {
+    $minutes = int($2) // 0;
+  }
+
   my $meridian = $3 // 0;
+
   my $pad = 0;
-  
+
   if ($meridian =~ /am/i && $hours == 12) {
     $pad = -12;
   }
@@ -109,12 +115,12 @@ sub parse_test_case {
     next if $line =~ /^#/;
 
     unless (scalar @arrivals) {
-      push @arrivals, split /,/, $line;
+      push @arrivals, split /\s*,\s*/, $line;
       next;
     }
 
     unless (scalar @departures) {
-      push @departures, split /,/, $line;
+      push @departures, split /\s*,\s*/, $line;
       next;
     }
 
@@ -154,17 +160,20 @@ sub main {
       $departures,
       $platforms
     ) = parse_test_case $target;
-    
+
     print $target, ": \n";
+
     assert_correct_platforms $arrivals, $departures, $platforms;
+
     return;
   } elsif (-e -r -d _) {
     $target =~ s/^(.*?)\/?$/$1\//;
-    
+
     opendir my $dh, $target
       or die "Could not open '$target' - $!\n";
 
     my @entries = readdir $dh;
+
     foreach my $entry (@entries) {
       if ($entry eq "." or $entry eq "..") {
         next;
@@ -178,6 +187,7 @@ sub main {
       ) = parse_test_case $path;
 
       print $path, ": \n";
+
       assert_correct_platforms $arrivals, $departures, $platforms;
     }
     closedir $dh;
