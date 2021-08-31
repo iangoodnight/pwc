@@ -41,26 +41,150 @@ use warnings;
 use utf8;
 use open ":std", ":encoding(UTF-8)";
 use Term::ANSIColor;
+use Data::Dumper;
 
 # Here, the subroutine to identify how many platforms are required (PWC
-# Solution) along with a helper subrouting, parseTime, to make our solution a 
+# Solution) along with a helper subroutine, parseTime, to make our solution a 
 # little more flexible when dealing with different types of input.
-
-sub platforms_needed {
-
-}
 
 sub parse_time {
   my $time = shift;
 
-  $time =~ /^\w*(\d{1,2}):?(\d{0,2}) ?([ap]m)?\w*$/i;
-
+  $time =~ /^\s*(\d{1,2}):?(\d{1,2}?) ?([ap]m)?\s*$/i; 
   my $hours = int($1);
-  my $minutes = int($2);
+  my $minutes = int($2) // 0;
   my $meridian = $3 // 0;
   my $pad = 0;
+  
+  if ($meridian =~ /am/i && $hours == 12) {
+    $pad = -12;
+  }
+  if ($meridian =~ /pm/i) {
+    $pad += 12 if $hours != 12;
+  }
 
-  print $hours, ":", $minutes, " ", $meridian, "\n";
+  return $hours + ($minutes/60)*1 + $pad;
 }
 
-parse_time("12:13");
+sub platforms_needed {
+  my ($arrivals, $departures) = @_;
+
+  my @arrival_key = map { ['arrived', parse_time $_] } @$arrivals;
+  my @departure_key = map { ['departed', parse_time $_] } @$departures;
+
+  my @sorted_keys = sort { $a->[1] <=> $b->[1] } (@arrival_key, @departure_key);
+
+  my $current = 0;
+  my $high_water_mark = 0;
+
+  map {
+    my $key = $_->[0];
+    my $time = $_->[1];
+
+    $current++ if $key eq 'arrived';
+    $current-- if $key eq 'departed';
+
+    $high_water_mark = $current if $current > $high_water_mark;
+
+  } @sorted_keys;
+
+  return $high_water_mark;
+}
+
+# Followed by some utilities to test our solution
+
+sub parse_test_case {
+  my $filename = shift;
+
+  my @arrivals = ();
+  my @departures = ();
+  my $platforms = "";
+
+  open my $fh, "<", $filename
+    or die "Could not open '$filename' - $!\n";
+
+  while (my $line = <$fh>) {
+    chomp $line;
+
+    next if $line =~ /^#/;
+
+    unless (scalar @arrivals) {
+      push @arrivals, split /,/, $line;
+      next;
+    }
+
+    unless (scalar @departures) {
+      push @departures, split /,/, $line;
+      next;
+    }
+
+    if ($line =~ /(\d{1,3})/) {
+      $platforms = $1;
+      last;
+    }
+  }
+  close $fh;
+
+  return (\@arrivals, \@departures, $platforms);
+}
+
+sub assert_correct_platforms {
+  my ($arrivals, $departures, $platforms) = @_;
+  my $test = platforms_needed $arrivals, $departures;
+
+  print "Arrivals: ", join(", ", @$arrivals), "\n";
+  print "Departures: ", join(", ", @$departures), "\n";
+  print "Expected: ", $platforms, "\n";
+
+  if ($test == $platforms) {
+    return print color("green"), "Passed \x{2690}\n", color("reset");
+  }
+  print color("red"), "Failed \x{2715}\n", color("reset");
+  return;
+}
+
+# And out test runner
+
+sub main {
+  my $target = shift @ARGV // "../test_cases/ch-2";
+
+  if (-e -r -f $target) {
+    my (
+      $arrivals,
+      $departures,
+      $platforms
+    ) = parse_test_case $target;
+    
+    print $target, ": \n";
+    assert_correct_platforms $arrivals, $departures, $platforms;
+    return;
+  } elsif (-e -r -d _) {
+    $target =~ s/^(.*?)\/?$/$1\//;
+    
+    opendir my $dh, $target
+      or die "Could not open '$target' - $!\n";
+
+    my @entries = readdir $dh;
+    foreach my $entry (@entries) {
+      if ($entry eq "." or $entry eq "..") {
+        next;
+      }
+
+      my $path = $target . $entry;
+      my (
+        $arrivals,
+        $departures,
+        $platforms
+      ) = parse_test_case $path;
+
+      print $path, ": \n";
+      assert_correct_platforms $arrivals, $departures, $platforms;
+    }
+    closedir $dh;
+    return;
+  } else {
+    print "No test files found\n";
+  }
+}
+
+main();
