@@ -150,7 +150,7 @@ const isDirectory = (filePath) => fs.lstatSync(filePath).isDirectory();
       console.log(testPath);
       return assertCorrectPlatforms(arrivals, departures, result);
     }
-    if (isDirectory) {
+    if (isDirectory(testPath)) {
       fs.readdirSync(testPath).map(fileName => {
         const filePath = path.join(testPath, fileName);
 
