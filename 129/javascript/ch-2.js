@@ -84,13 +84,22 @@ class LinkedList {
   constructor(listElems) {
     const [headVal, ...rest] = listElems;
 
-    this.head = { value: headVal, next: null };
+    this.head = { next: null, previous: null, value: headVal };
     rest.forEach((value) => {
       this.appendNode(value);
     });
   }
   // Private Methods
-  #getLast() {
+  #sumAndCarryOver(value1, value2) {
+
+  }
+  // Public Methods
+  appendNode(value) {
+    const tail = this.getLast();
+
+    tail.next = { value, next: null, previous: tail };
+  }
+  getLast() {
     let lastNode = this.head;
     if (lastNode) {
       while (lastNode.next) {
@@ -98,12 +107,6 @@ class LinkedList {
       }
     }
     return lastNode;
-  }
-  // Public Methods
-  appendNode(value) {
-    const tail = this.#getLast();
-
-    tail.next = { value, next: null };
   }
   printList() {
     let lastNode = this.head;
@@ -115,8 +118,40 @@ class LinkedList {
       console.log(`${lastNode.value}`);
     }
   }
+  size() {
+    let count = 0;
+    let node = this.head;
+    while(node) {
+      count++;
+      node = node.next;
+    }
+    return count;
+  }
   sumLists(linkedList) {
+    const bigList = this.size() > linkedList.size() ? this: linkedList;
 
+    const littleList = this.size() < linkedList.size() ? this: linkedList;
+
+    const valueArray = [];
+
+    let bigListNode = bigList.getLast();
+    let littleListNode = littleList.getLast();
+    let carried = 0;
+
+    if (bigListNode && littleListNode) {
+      let sum = bigListNode.value + littleListNode.value;
+      if (sum >= 10) {
+        valueArray.push(0);
+        carried = sum - 10;
+      }
+      if (sum < 10) valueArray.push(sum);
+
+      while (bigListNode.previous) {
+        const { previous: {  value: bigVal = 0 } = {}} = bigListNode;
+
+        const { previous: {  value: littleVal = 0 } = {}} = littleListNode;
+      }
+    }
   }
 }
 
