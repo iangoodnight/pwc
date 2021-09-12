@@ -1,13 +1,16 @@
 #!/usr/bin/env node
 
 /**
+ * Task 2 > Add Linked Lists
+ * =========================
+ *
  * Given two linked lists consisting only of single-digit positive
  * numbers, write a script to add the two linked lists and create a new linked
  * list representing the sum of the two linked list numbers.  The two linked
  * lists may or may not have the same number of elements.
  *
  * HINT: Just a suggestion, feel free to develop a unique way to deal with the
- * task.  The expectataion is  a class representing linked list.  It should have
+ * task.  The expectation is  a class representing linked list.  It should have
  * methods to create a new linked list from a list of single-digit positive
  * numbers and a method to add a new member.  Also, have a method that takes two
  * linked list objects and returns a new linked list--finally, a method to print
@@ -78,29 +81,44 @@ const path = require('path');
  * Here, our linked list class (PWC Solution)
  **/
 
-const testList = [5, 4, 3, 2, 1];
-
 class LinkedList {
-  constructor(listElems) {
+  constructor(listElems = []) {
     const [headVal, ...rest] = listElems;
 
-    this.head = { next: null, previous: null, value: headVal };
-    rest.forEach((value) => {
-      this.appendNode(value);
-    });
-  }
-  // Private Methods
-  #sumAndCarryOver(value1, value2) {
-
+    if (headVal) {
+      this.head = { next: null, previous: null, value: headVal };
+      rest.forEach((value) => {
+        this.push(value);
+      });
+    }
   }
   // Public Methods
-  appendNode(value) {
+  pop() {
+    let lastNode = this.getLast();
+    const { previous, value } = lastNode;
+
+    if (previous) {
+      previous.next = null;
+    } else {
+      delete this.head;
+      return value;
+    }
+    return value;
+  }
+  // For building our list
+  push(value) {
     const tail = this.getLast();
 
-    tail.next = { value, next: null, previous: tail };
+    if (!tail) {
+      this.head = { next: null, previous: null, value };
+      return this;
+    }
+    tail.next = { next: null, previous: tail, value };
+    return this;
   }
+  // To find the tail
   getLast() {
-    let lastNode = this.head;
+    let lastNode = this.head || {};
     if (lastNode) {
       while (lastNode.next) {
         lastNode = lastNode.next;
@@ -108,16 +126,15 @@ class LinkedList {
     }
     return lastNode;
   }
-  printList() {
-    let lastNode = this.head;
-    if (lastNode) {
-      while (lastNode.next) {
-        process.stdout.write(`${lastNode.value} -> `);
-        lastNode = lastNode.next;
-      }
-      console.log(`${lastNode.value}`);
-    }
+  // To rebuild our new list
+  unshift(value) {
+    const newHead = { next: this.head || null, previous: null, value };
+
+    if (this.head) this.head.previous = newHead;
+    this.head = newHead;
+    return this;
   }
+  // Just for fun
   size() {
     let count = 0;
     let node = this.head;
@@ -127,34 +144,123 @@ class LinkedList {
     }
     return count;
   }
+  // Our PWC Solution
   sumLists(linkedList) {
-    const bigList = this.size() > linkedList.size() ? this: linkedList;
+    const summedList = new LinkedList();
 
-    const littleList = this.size() < linkedList.size() ? this: linkedList;
-
-    const valueArray = [];
-
-    let bigListNode = bigList.getLast();
-    let littleListNode = littleList.getLast();
     let carried = 0;
+    while (this.head || linkedList.head) {
+      // This is desctructive, and maybe not the best approach
+      // might be worth refactoring later
+      const thisVal = this.pop() || 0,
+            thatVal = linkedList.pop() || 0;
+      const summed = thisVal + thatVal + carried;
 
-    if (bigListNode && littleListNode) {
-      let sum = bigListNode.value + littleListNode.value;
-      if (sum >= 10) {
-        valueArray.push(0);
-        carried = sum - 10;
-      }
-      if (sum < 10) valueArray.push(sum);
+      if (summed >= 10) {
+        const val = summed - 10;
 
-      while (bigListNode.previous) {
-        const { previous: {  value: bigVal = 0 } = {}} = bigListNode;
-
-        const { previous: {  value: littleVal = 0 } = {}} = littleListNode;
+        summedList.unshift(val);
+        carried = 1;
+      } else {
+        summedList.unshift(summed);
+        carried = 0;
       }
     }
+    return summedList;
+  }
+  // To print our lists like in the example
+  toString() {
+    let node = this.head;
+    const values = [];
+
+    while (node) {
+      values.push(node.value);
+      node = node.next;
+    }
+    return values.join(' -> ');
   }
 }
 
-let list = new LinkedList(testList);
+/**
+ * Followed by some utilities to test our solution
+ **/
 
-list.printList();
+function parseTestCase(filePath = '') {
+  try {
+    const data = fs.readFileSync(filePath, 'utf8');
+
+    const lines = data.split('\n').filter((line) => {
+      return line.length !== 0 && line.charAt(0) !== '#';
+    });
+
+    if (!lines.length) throw new Error('Test case unreadable at: ', filePath);
+
+    const [first, second, test] = lines;
+
+    const firstList = first.split(' -> ').map(el => parseInt(el));
+
+    const secondList = second.split(' -> ').map(el => parseInt(el));
+
+    if (!firstList.length || !secondList.length) {
+      throw new Error('Problems parsing test cases at: ', filePath);
+    }
+    const firstLinkedList = new LinkedList(firstList);
+
+    const secondLinkedList = new LinkedList(secondList);
+
+    return [ firstLinkedList, secondLinkedList, test ];
+  } catch (error) {
+    console.log(error);
+    process.exit(1);
+  }
+}
+
+function assertMatch(firstList, secondList, expected) {
+  console.log('First List: ', firstList.toString());
+  console.log('Second List: ', secondList.toString());
+  console.log('Expected: ', expected);
+  const test = firstList.sumLists(secondList);
+
+  console.log('Results: ', test.toString());
+  if (expected !== test.toString()) {
+    return console.log('\x1b[31m%s\x1b[0m', 'Failed \u2715');
+  }
+  return console.log('\x1b[32m%s\x1b[0m', 'Passed \u2690');
+}
+
+const isFile = (filePath) => fs.lstatSync(filePath).isFile();
+
+const isDirectory = (filePath) => fs.lstatSync(filePath).isDirectory();
+
+/**
+ * And our test runner
+ **/
+
+(function main() {
+  const testPath = process.argv[2] || '../test_cases/ch-2';
+
+  try {
+    if (isFile(testPath)) {
+      const [ firstList, secondList, expected ] = parseTestCase(testPath);
+      console.log(firstList.toString());
+      console.log(secondList.toString());
+
+      console.log(testPath);
+      return assertMatch(firstList, secondList, expected);
+    }
+    if (isDirectory(testPath)) {
+      fs.readdirSync(testPath).map(fileName => {
+        const filePath = path.join(testPath, fileName);
+
+        const [ firstList, secondList, expected ] = parseTestCase(filePath);
+
+        console.log(filePath);
+        assertMatch(firstList, secondList, expected);
+      });
+      return;
+    }
+    return 'No tests found';
+  } catch (error) {
+    console.log('Something went wrong: ', error);
+  }
+})();
