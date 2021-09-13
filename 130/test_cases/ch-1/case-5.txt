@@ -1,0 +1,8 @@
+# Case 5
+# No reason why the same function shouldn't work on strings and negative numbers
+1,H,H,H,1,tree,tree
+H
+😼,😽,😽
+😼
+-2,-2,10,10,10,10,-1
+-1

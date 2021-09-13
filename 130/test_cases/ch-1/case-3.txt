@@ -1,0 +1,6 @@
+# Case 3
+# Testing how flexible our test runner is with handling multiple tests
+3,7,7,9,9,3,2
+2
+1,1,1,1,3
+3

@@ -1,0 +1,4 @@
+# Case 4
+# Testing for multiple results (outside of challenge scope)
+2,7,3,3,7,7
+2,7
