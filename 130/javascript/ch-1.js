@@ -124,14 +124,15 @@ function assertMatch(input = [], expected) {
 
   const type = typeof result;
 
+  // Handles singles results
   if (type === 'number' || type === 'string') {
-    if (result === expected) {
-      console.log('Expected: ', expected);
-      console.log('Result: ', result);
-      return console.log('\x1b[32m%s\x1b[0m', 'Passed \u2690');
-    }
+
     console.log('Expected: ', expected);
     console.log('Result: ', result);
+
+    if (result === expected) {
+      return console.log('\x1b[32m%s\x1b[0m', 'Passed \u2690');
+    }
     return console.log('\x1b[31m%s\x1b[0m', 'Failed \u2715');
   }
 
@@ -139,10 +140,10 @@ function assertMatch(input = [], expected) {
     const answerArray = expected.split(',')
       .map(el => el.trim()).sort();
 
+    result.sort();
+
     console.log('Expected: ', answerArray.join(', '));
     console.log('Result: ', result.join(', '));
-
-    result.sort();
 
     const passed = answerArray.reduce((passes, answer, idx) => {
       if (answer !== result[idx]) passes = false;
