@@ -11,7 +11,7 @@
  *
  * > A binary search tree is a rooted binary tree, whose internal nodes each
  * > store a key (and optionally, an associated value), and each had two
- * > distinguished sub-trees, commonly denotes left and right.  The tree
+ * > distinguished sub-trees, commonly denoted left and right.  The tree
  * > additionally satisfies the binary seach property: the key in each node is
  * > greater than or equal to any key stored in the left sub-tree, and less than
  * > or equal to any key stored in the right sub-tree.  The leaves (final nodes)
@@ -87,55 +87,96 @@ class BinarySearchTree {
     node.right = { data };
     return this;
   }
+}
 
-  toString() {
-    const rows = [];
+function isBST(binaryTree = {}) {
+  if (typeof binaryTree !== 'object' || !binaryTree.root) return false;
 
-    let nodes = [this.root];
-    let depth = 0;
+  const recurse = ((node, min = null, max = null) => {
+    console.log(node);
+    console.log('min: ', min, 'max: ', max);
+    if (!node) return true;
+    if (max !== null && node.data >= max) return false;
+    if (min !== null && node.data <= max) return false;
 
-    while (nodes.length > 0) {
-      let children = []
-      const branches = [];
+    return (
+      recurse(node.left, min, node.data) &&
+      recurse(node.right, node.data, max)
+    );
+  });
 
-      const values = [];
+  return recurse(binaryTree.root);
+ }
 
-      nodes.forEach(node => {
-        if (node.data) {
-          values.push(node.data);
-          depth++;
-        }
-        if (node.left) {
-          children.push(node.left);
-          branches.push('/');
-        }
-        if (node.right) {
-          children.push(node.right);
-          branches.push('\\');
-        }
-        if (node.right || node.left) depth++;
-      });
+class BinaryNode {
+  constructor(data) {
+    this.data = data;
+  }
+  // addRight and addLeft methods to keep our nodes binary and our leaves clear
+  addRight(data) {
+    if (this.right) return false;
+    this.right = new BinaryNode(data);
+    return this;
+  }
 
-      rows.push(values);
-      if (branches.length > 0) rows.push(branches);
-
-      nodes = children;
-    }
-    console.log(rows);
+  addLeft(data) {
+    if (this.left) return false;
+    this.left = new BinaryNode(data);
+    return this;
   }
 }
 
-const test = new BinarySearchTree(15);
+class BinaryTree {
+  constructor(data = null) {
+    if (data !== null) {
+      this.root = new BinaryNode(data);
+    } else {
+      this.root = data;
+    }
+  }
+  // In the case where Binary tree is initialized without a root or when
+  // over-writing an exisiting tree.
+  addRoot(data) {
+    if (!data) return false;
+    this.root = new BinaryNode(data);
+  }
+  // Private crawl method
+  #crawl(callback) {
+    const recurse = (node) => {
+      callback(node);
+      if (node.left) recurse(node.left);
+      if (node.right) recurse(node.right);
+    }
+    recurse(this.root);
+  }
+  // Find and return a node by data value
+  findNode(data) {
+    let found = false;
+    this.#crawl((node) => {
+      if (node.data === data) {
+        found = node;
+        return;
+      }
+    });
+    return found;
+  }
+}
 
-test.add(25);
-test.add(10);
-test.add(7);
-test.add(22);
-test.add(17);
-test.add(13);
-test.add(5);
-test.add(9);
-test.add(27);
+/**
+ * Followed by some utilities to test our solution
+ **/
 
-console.log(test);
-test.toString();
+
+
+const test = new BinaryTree(8);
+
+test.findNode(8).addLeft(5).addRight(9);
+test.findNode(5).addLeft(4).addRight(6);
+
+const test2 = new BinaryTree(5);
+
+test2.findNode(5).addLeft(4).addRight(7);
+test2.findNode(4).addLeft(3).addRight(6);
+
+console.log(isBST(test));
+console.log(isBST(test2));
