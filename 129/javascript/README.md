@@ -27,15 +27,19 @@ hoping to finish up those solutions at a later date.
 ```
 
 Node: 6
+
 Output: 3 as the distance of given node 6 from the root (1).
 
 Node: 5
+
 Output: 3
 
 Node: 2
+
 Output: 1
 
 Node: 4
+
 Output: 2
 
 ### Example 2
@@ -55,12 +59,15 @@ Output: 2
 ```
 
 Node: 7
+
 Output: 3 as the distance of given node 6 from the root (1).
 
 Node: 8
+
 Output: 4
 
 Node: 6
+
 Output: 3
 
 ### SOLUTION
@@ -213,8 +220,12 @@ ignored.
 
 ### Example 1
 
-Input:  L1 = 1 -> 2 -> 3
-        L2 = 3 -> 2 -> 1
+Input:  
+
+L1 = 1 -> 2 -> 3
+
+L2 = 3 -> 2 -> 1
+        
 Output: 4 -> 4 -> 4
 
 Operation: Pick the first rightmost element of L1, i.e., 3, and adds to the
@@ -228,8 +239,12 @@ assumed that it is 0.
 
 ###Example 2
 
-Input: L1 = 1 -> 2 -> 3 -> 4 -> 5
-       L2 =           6 -> 5 -> 5
+Input: 
+
+L1 = 1 -> 2 -> 3 -> 4 -> 5
+
+L2 =           6 -> 5 -> 5
+       
 Output:     1 -> 3 -> 0 -> 0 -> 0
 
 Operations:
