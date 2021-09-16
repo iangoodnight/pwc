@@ -59,54 +59,30 @@ const path = require('path');
  * Here, our BinarySearchTree class (PWC solution)
  **/
 
-class BinarySearchTree {
-  constructor(data = null) {
-    if (data !== null) {
-      this.root = { data };
-    } else {
-      this.root = data;
-    }
-  }
-
-  add(data) {
-    if (this.root === null) {
-      this.root = { data, left: null, right: null };
-      return this;
-    }
-    return this.#insertNode(this.root, data);
-  }
-
-  #insertNode(node, data) {
-    const { data: compareData, left = null, right = null } = node;
-    if (data < compareData) {
-      if (left !== null) return this.#insertNode(left, data);
-      node.left = { data };
-      return this;
-    }
-    if (right !== null) return this.#insertNode(right, data);
-    node.right = { data };
-    return this;
-  }
-}
-
 function isBST(binaryTree = {}) {
+  // Guard against obviously bad input
   if (typeof binaryTree !== 'object' || !binaryTree.root) return false;
-
+  // This is our actual solution, `isBST` is just a wrapper for it
   const recurse = ((node, min = null, max = null) => {
-    console.log(node);
-    console.log('min: ', min, 'max: ', max);
+    // if no node, we've reached the end of the tree without failing.  Pass.
     if (!node) return true;
+    // if we've exceed our max, fail
     if (max !== null && node.data >= max) return false;
-    if (min !== null && node.data <= max) return false;
-
+    // if we find a value less than our min, fail
+    if (min !== null && node.data <= min) return false;
+    // Recurse through the rest of the nodes.
     return (
       recurse(node.left, min, node.data) &&
       recurse(node.right, node.data, max)
     );
   });
-
+  // Start recursing at the validated root
   return recurse(binaryTree.root);
  }
+
+/**
+ * Followed by some utilities to test our solution
+ **/
 
 class BinaryNode {
   constructor(data) {
@@ -135,7 +111,7 @@ class BinaryTree {
     }
   }
   // In the case where Binary tree is initialized without a root or when
-  // over-writing an exisiting tree.
+  // over-writing an existing tree.
   addRoot(data) {
     if (!data) return false;
     this.root = new BinaryNode(data);
@@ -149,7 +125,7 @@ class BinaryTree {
     }
     recurse(this.root);
   }
-  // Find and return a node by data value
+  // Find and return a node by data value to assist in building our tree
   findNode(data) {
     let found = false;
     this.#crawl((node) => {
@@ -162,21 +138,96 @@ class BinaryTree {
   }
 }
 
-/**
- * Followed by some utilities to test our solution
- **/
+function buildTreeFromStringArr(stringArr = []) {
+  const binaryTree = new BinaryTree();
+
+  const root = parseInt([...stringArr].shift().trim());
+
+  if (root === NaN) return binaryTree;
+  const lines = [...stringArr];
+
+  binaryTree.addRoot(root);
+
+  while (lines.length > 0) {
+    const valueString = lines.shift();
+
+    const values = valueString.trim().split(/\s+/)
+      .map((val) => {
+        return { value: parseInt(val), idx: valueString.indexOf(val) };
+      });
+
+    const connections = lines.shift();
+
+    const leaves = lines[0];
+
+    if (connections) {
+      for (let i = 0; i < values.length; i++) {
+        const node = binaryTree.findNode(values[i].value);
+
+        const leftBound = i === 0 ? 0: values[i - 1].idx + 1;
+
+        const rightBound = i === values.length - 1 ?
+          leaves.length :
+          values[i + 1]?.idx + 1;
+        const connectionRange = connections.slice(leftBound, rightBound);
+
+        const leftIdx = connectionRange.indexOf('/');
+
+        const rightIdx = connectionRange.indexOf('\\');
+
+        const left = leftIdx !== -1 && leftIdx < values[i].idx;
+
+        const right = rightIdx !== -1 && rightIdx > values[i].idx;
+
+        if (left) {
+          const range = leaves.slice(leftBound, values[i].idx);
+
+          const leaf = parseInt(range.trim());
+
+          node.addLeft(leaf);
+        }
+
+        if (right) {
+          const range = leaves.slice(values[i].idx + 1, rightBound);
+
+          const leaf = parseInt(range.trim());
+
+          node.addRight(leaf);
+        }
+      }
+    }
+  }
+  return binaryTree;
+}
+
+function parseTestCase(filePath = '') {
+  try {
+    const data = fs.readFileSync(filePath, 'utf8');
+
+    const lines = data.split('\n')
+      .filter(line => {
+        return line.trim().charAt(0) !== '#' && line.trim().length !== 0;
+      }
+    );
+    const [treeData, outputs] = lines.reduce(([data, tests], line) => {
+      if (tests.length > data.length) data.push([]);
+      if (line.indexOf('Output') !== -1) {
+        tests.push(line.trim());
+        return [data, tests];
+      }
+      data[tests.length].push(line);
+      return [data, tests];
+    },[[[]], []]);
+
+    const trees = treeData.map(treeArr => buildTreeFromStringArr(treeArr));
+
+    console.log(trees);
+    // TO Do, parse OUtput;
+
+  } catch (error) {
+    console.log('Problems parsing test cases: ', error);
+  }
+}
 
 
-
-const test = new BinaryTree(8);
-
-test.findNode(8).addLeft(5).addRight(9);
-test.findNode(5).addLeft(4).addRight(6);
-
-const test2 = new BinaryTree(5);
-
-test2.findNode(5).addLeft(4).addRight(7);
-test2.findNode(4).addLeft(3).addRight(6);
-
-console.log(isBST(test));
-console.log(isBST(test2));
+parseTestCase('../test_cases/ch-2/case-1.txt');
