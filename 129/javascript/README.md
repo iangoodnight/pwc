@@ -27,15 +27,19 @@ hoping to finish up those solutions at a later date.
 ```
 
 Node: 6
+
 Output: 3 as the distance of given node 6 from the root (1).
 
 Node: 5
+
 Output: 3
 
 Node: 2
+
 Output: 1
 
 Node: 4
+
 Output: 2
 
 ### Example 2
@@ -55,12 +59,15 @@ Output: 2
 ```
 
 Node: 7
+
 Output: 3 as the distance of given node 6 from the root (1).
 
 Node: 8
+
 Output: 4
 
 Node: 6
+
 Output: 3
 
 ### SOLUTION
