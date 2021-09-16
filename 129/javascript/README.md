@@ -220,9 +220,11 @@ ignored.
 
 ### Example 1
 
-Input:  L1 = 1 -> 2 -> 3
+Input:  
 
-        L2 = 3 -> 2 -> 1
+L1 = 1 -> 2 -> 3
+
+L2 = 3 -> 2 -> 1
         
 Output: 4 -> 4 -> 4
 
@@ -237,9 +239,11 @@ assumed that it is 0.
 
 ###Example 2
 
-Input: L1 = 1 -> 2 -> 3 -> 4 -> 5
+Input: 
 
-       L2 =           6 -> 5 -> 5
+L1 = 1 -> 2 -> 3 -> 4 -> 5
+
+L2 =           6 -> 5 -> 5
        
 Output:     1 -> 3 -> 0 -> 0 -> 0
 
