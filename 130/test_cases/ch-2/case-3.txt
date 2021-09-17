@@ -1,0 +1,17 @@
+# Case 3
+# Strings
+    h
+   / \
+  e   i
+ / \
+d   f
+
+Output: 1
+
+    e
+   / \
+  d   g
+ / \
+c   f
+
+Output: 0

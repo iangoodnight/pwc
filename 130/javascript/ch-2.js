@@ -56,7 +56,7 @@ const fs = require('fs');
 const path = require('path');
 
 /**
- * Here, our BinarySearchTree class (PWC solution)
+ * Here, our BinarySearchTree validator (PWC solution)
  **/
 
 function isBST(binaryTree = {}) {
@@ -76,7 +76,7 @@ function isBST(binaryTree = {}) {
       recurse(node.right, node.data, max)
     );
   });
-  // Start recursing at the validated root
+  // Start recursion at the validated root
   return recurse(binaryTree.root);
  }
 
@@ -84,6 +84,7 @@ function isBST(binaryTree = {}) {
  * Followed by some utilities to test our solution
  **/
 
+// BinaryNode and BinaryTree classes to build test cases
 class BinaryNode {
   constructor(data) {
     this.data = data;
@@ -137,13 +138,25 @@ class BinaryTree {
     return found;
   }
 }
+// Utility for turning strings into integers or floats if necessary to avoid
+// awkward comparisons
+function parseArg(stringArg = '') {
+  const int = /^-?\d+$/;
 
+  const float = /^-?\d*\.\d+$/;
+
+  if (int.test(stringArg)) return parseInt(stringArg);
+  if (float.test(stringArg)) return parseFloat(stringArg);
+
+  return stringArg;
+}
+// Parses input strings into BinaryTrees
 function buildTreeFromStringArr(stringArr = []) {
   const binaryTree = new BinaryTree();
 
-  const root = parseInt([...stringArr].shift().trim());
+  const root = parseArg([...stringArr].shift().trim());
 
-  if (root === NaN) return binaryTree;
+  if (root === NaN || root === '') return binaryTree;
   const lines = [...stringArr];
 
   binaryTree.addRoot(root);
@@ -153,7 +166,7 @@ function buildTreeFromStringArr(stringArr = []) {
 
     const values = valueString.trim().split(/\s+/)
       .map((val) => {
-        return { value: parseInt(val), idx: valueString.indexOf(val) };
+        return { value: parseArg(val), idx: valueString.indexOf(val) };
       });
 
     const connections = lines.shift();
@@ -182,7 +195,7 @@ function buildTreeFromStringArr(stringArr = []) {
         if (left) {
           const range = leaves.slice(leftBound, values[i].idx);
 
-          const leaf = parseInt(range.trim());
+          const leaf = parseArg(range.trim());
 
           node.addLeft(leaf);
         }
@@ -190,7 +203,7 @@ function buildTreeFromStringArr(stringArr = []) {
         if (right) {
           const range = leaves.slice(values[i].idx + 1, rightBound);
 
-          const leaf = parseInt(range.trim());
+          const leaf = parseArg(range.trim());
 
           node.addRight(leaf);
         }
@@ -199,7 +212,8 @@ function buildTreeFromStringArr(stringArr = []) {
   }
   return binaryTree;
 }
-
+// Paritions inputs form expected outputs and return display, tree, and expected
+// output for testing
 function parseTestCase(filePath = '') {
   try {
     const data = fs.readFileSync(filePath, 'utf8');
@@ -212,22 +226,91 @@ function parseTestCase(filePath = '') {
     const [treeData, outputs] = lines.reduce(([data, tests], line) => {
       if (tests.length > data.length) data.push([]);
       if (line.indexOf('Output') !== -1) {
-        tests.push(line.trim());
+        tests.push(parseInt(line.trim().slice(-1)));
         return [data, tests];
       }
+      if (!data[tests.length]) data[tests.length] = [];
       data[tests.length].push(line);
       return [data, tests];
     },[[[]], []]);
 
     const trees = treeData.map(treeArr => buildTreeFromStringArr(treeArr));
 
-    console.log(trees);
-    // TO Do, parse OUtput;
+    if (trees.length !== outputs.length) {
+      throw new Error('Missing inputs or outputs');
+    }
 
+    const displays = treeData.map(treeArr => treeArr.join('\n'));
+
+    return [ displays, trees, outputs ];
   } catch (error) {
     console.log('Problems parsing test cases: ', error);
   }
 }
 
+function assertMatch(tree, output) {
+  console.log('Expected: ', output);
+  const result = isBST(tree);
 
-parseTestCase('../test_cases/ch-2/case-1.txt');
+  if (result) {
+    console.log('Result: 1 as the given tree is a BST.');
+  } else {
+    console.log('Result: 0 as the given tree is not a BST.')
+  }
+  if (!!output === result) {
+    return console.log('\x1b[32m%s\x1b[0m', 'Passed \u2690');
+  }
+  console.log('\x1b[31m%s\x1b[0m', 'Failed \u2715');
+}
+
+const isFile = (filePath) => fs.lstatSync(filePath).isFile();
+
+const isDirectory = (filePath) => fs.lstatSync(filePath).isDirectory();
+
+/**
+ * And our test runner
+ **/
+
+(function main() {
+  const testPath = process.argv[2] || '../test_cases/ch-2';
+
+  try {
+    if (isFile(testPath)) {
+      const [ displays, trees, outputs ] = parseTestCase(testPath);
+
+      console.log(testPath);
+      console.log('='.repeat(testPath.length));
+      console.log('\n');
+
+      displays.forEach((display, idx) => {
+        console.log('Input: ');
+        console.log(display);
+        assertMatch(trees[idx], outputs[idx]);
+        console.log('\n');
+      });
+      return;
+    }
+    if (isDirectory(testPath)) {
+      fs.readdirSync(testPath).forEach(fileName => {
+        const filePath = path.join(testPath, fileName);
+
+        const [ displays, trees, outputs ] = parseTestCase(filePath);
+
+        console.log(filePath);
+        console.log('='.repeat(filePath.length));
+        console.log('\n');
+
+        displays.forEach((display, idx) => {
+          console.log('Input: ');
+          console.log(display);
+          assertMatch(trees[idx], outputs[idx]);
+          console.log('\n');
+        });
+      });
+      return;
+    }
+    return console.log('No tests found');
+  } catch (error) {
+    console.log('Something went wrong: ', error);
+  }
+})();

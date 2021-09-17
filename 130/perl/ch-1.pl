@@ -2,6 +2,8 @@
 
 =begin comment
 
+ * ch-1.pl
+ *
  * Task 1 > Odd Number
  * ===================
  *
@@ -33,7 +35,6 @@ use warnings;
 use utf8;
 use open ":std", ":encoding(UTF-8)";
 use Term::ANSIColor;
-use Data::Dumper;
 
 # Here, our input reducer (PWC solution)
 

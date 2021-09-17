@@ -1,0 +1,9 @@
+# Case 5
+# floats and negatives
+          1011
+         /      \
+    83.1          1011.11
+  /     \
+-2       99.99
+
+Output: 1
