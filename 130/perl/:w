@@ -51,14 +51,14 @@
 use strict;
 use warnings;
 use utf8;
-use open ":std", ":encoding(UTF-8)";
 use Term::ANSIColor;
+use Data::Dumper;
 
 # Here, our BinarySearchTree validator (PWC Solution)
 
 sub is_BST {
   my ($tree, $node, $min, $max) = @_;
-  # catch invalid input, reset at root
+  # catch invaldi input, reset at root
   if (not ($node || $min || $max)) {
     return 0 unless $tree->{'root'};
     return is_BST($tree, $tree->{'root'});
@@ -68,24 +68,27 @@ sub is_BST {
     return 1;
   }
   my $test = $node->{'data'};
-  my $num = $test =~ /^-?\d*\.?\d+$/;
   # exceeds $max.  fail
   if (defined $max) {
-    if ($num and $test >= $max) {
+    if ($test =~ /^-?\d*\.?\d+$/ and $test >= $max) {
       return 0;
     }
-    if (not($num) and $test ge $max) {
+
+    if ($test ge $max) {
       return 0;
     }
+
   }
   # less then $min.  fail
   if (defined $min) {
-    if ($num and $test <= $min) {
+    if ($test =~ /^-?\d*\.?\d+$/ and $test <= $min) {
       return 0;
     }
-    if (not($num) and $test le $min) {
+
+    if ($test le $min) {
       return 0;
     }
+
   }
   # recurse
   if (
@@ -164,7 +167,7 @@ sub is_BST {
     unless (defined $tree) {
       $tree = $self->{'root'};
     }
-    if ($tree->{'data'} eq $match) {
+    if ($tree->{'data'} == $match) {
       return $tree;
     }
     unless ($tree->{'left'} || $tree->{'right'}) {
@@ -174,6 +177,13 @@ sub is_BST {
            find_node($self, $match, $tree->{'right'});
   }
 }
+
+my $test1 = Binary_tree->new('8');
+$test1->{'root'}->add_left('5')->add_right('9');
+$test1->find_node('5')->add_left('4')->add_right('6');
+
+print Dumper $test1;
+print Dumper is_BST($test1);
 
 sub tree_from_strings {
   my $tree_data = shift;
@@ -215,44 +225,18 @@ sub tree_from_strings {
       foreach my $idx (0 .. $#values) {
         my $node = $binary_tree->find_node($values[$idx]->{'value'});
 
-        my $l_bound = $idx == 0 ? 0: $values[$idx - 1]->{'idx'} + 1;
-        # Probably a problem in that last ternary condition. 
-        my $r_bound = $idx == $#values ?
-          length($leaves) - 1 : $values[$idx + 1]->{'idx'} + 1;
-
-        my @connection_split = split('', $connections);
-        my @connection_range = @connection_split[$l_bound .. $r_bound];
-        my $connections_joined = join'', grep { defined $_ } @connection_range;
-
-        my $l_idx = index($connections_joined, "/");
-        my $r_idx = index($connections_joined, "\\");
+        my $left_bound = $idx == 0 ? 0: $values[$idx - 1]->{'idx'} + 1;
         
-        my $left = $l_idx != -1 && $l_idx < $values[$idx]->{'idx'};
-        my $right = $r_idx != -1 && $r_idx > $values[$idx]->{'idx'};
-
-        if ($left) {
-          my $range_length = $values[$idx]->{'idx'} - $l_bound + 1;
-
-          my $l_val = substr $leaves, $l_bound, $range_length;
-          $l_val =~ s/^\s+|\s+$//g;
-
-          $node->add_left($l_val);
-        }
-
-        if ($right) {
-          my $offset = $values[$idx]->{'idx'} + 1;
-          my $range_length = $r_bound - $offset + 1;
-
-          my $r_val = substr $leaves, $offset, $range_length;
-          $r_val =~ s/^\s+|\s+$//g;
-
-          $node->add_right($r_val);
-        }
+        my $right_bound = $idx == $#$values ?
+          length($leaves) : $values[$idx + 1]->{'idx'} + 1;
       }
     }
   }
-  return $binary_tree;
 }
+
+my @parse_test = ("    5    ", " 7");
+
+tree_from_strings(\@parse_test);
 
 sub parse_test_case {
   my $file_path = shift;
@@ -282,7 +266,7 @@ sub parse_test_case {
   }
   my @trees = map {
     my $raw_tree = $_;
-    tree_from_strings $raw_tree;
+    build_tree $raw_tree;
   } @tree_data;
 
   return (\@displays, \@trees, \@outputs);
@@ -290,7 +274,7 @@ sub parse_test_case {
 
 sub assert_match {
   my ($tree, $output) = @_;
-  my $result = is_BST $tree;
+  my $result = isBST $tree;
 
   print "Expected: $output\n";
 
@@ -334,7 +318,7 @@ sub main {
 
     closedir $dh;
 
-    foreach my $entry (sort @entries) {
+    foreach my $entry (@entries) {
       if ($entry eq "." or $entry eq "..") {
         next;
       }
@@ -356,4 +340,4 @@ sub main {
   print "No tests found at $target\n";
 }
 
-main();
+# main();
