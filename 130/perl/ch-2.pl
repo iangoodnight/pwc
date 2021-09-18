@@ -54,7 +54,9 @@ use utf8;
 use open ":std", ":encoding(UTF-8)";
 use Term::ANSIColor;
 
+#####################################################
 # Here, our BinarySearchTree validator (PWC Solution)
+#####################################################
 
 sub is_BST {
   my ($tree, $node, $min, $max) = @_;
@@ -67,6 +69,7 @@ sub is_BST {
   if (($min || $max) and not (defined $node)) {
     return 1;
   }
+  # Testing conveniences
   my $test = $node->{'data'};
   my $num = $test =~ /^-?\d*\.?\d+$/;
   # exceeds $max.  fail
@@ -92,15 +95,20 @@ sub is_BST {
     is_BST($tree, $node->{'left'}, $min, $node->{'data'}) &&
     is_BST($tree, $node->{'right'}, $node->{'data'}, $max)
   ) {
+    # pass
     return 1;
   }
+  # something unexpected happened, fail for safety
   return 0;
 }
 
+#####################################################
+#####################################################
 
 # Followed by some utilities to test our solution
 
 {
+  # Binary_node class to expose `add_right` and `add_left` methods
   package Binary_node;
   # constructor
   sub new {
@@ -175,31 +183,44 @@ sub is_BST {
   }
 }
 
+# Takes an array of strings and returns a Binary_tree
+# meant to deal with the lines returned from parsed test cases
 sub tree_from_strings {
   my $tree_data = shift;
+  # Initialize tree
   my $binary_tree = Binary_tree->new();
-
+  # Bail early
   if (not defined $tree_data) {
     return 0;
   }
-
+  # Establish root
   if (scalar(@$tree_data) > 0 && not defined $binary_tree->{'root'}) {
+    # Should be the very first line
     my $root = $tree_data->[0];
+    # Trim
     $root =~ s/^\s+|\s+$//g;
-
+    # Add root
     $binary_tree->add_root($root);
+    # Check in case it is a one node tree
     unless ($#$tree_data) {
       return $binary_tree;
     }
   }
-
+  # Shallow copy so we can be destructive without feeling bad
   my @data = @$tree_data[0 .. $#$tree_data];
-
+  # Start inspecting three lines at a time, looking for node values, connections
+  # and leaf values
   while (scalar(@data) != 0) {
+    # We want to look at an array of values split from the first string (our
+    # node values), and their original index in the string to establish their 
+    # relative location, so we'll start by making a copy of the first row.
     my $tmp_values = $data[0];
+    # And then shift it out of the list so our next iteration focuses on the 
+    # next nodes.
     my $value_str = shift @data;
-
+    # Strip the whitespace from our copy (which will become our values hash)
     $tmp_values =~ s/^\s+|\s+$//g;
+    # Map through and create a hash of values and their location on the string
     my @values = map {
       my $value = $_;
       {
@@ -207,29 +228,32 @@ sub tree_from_strings {
         idx => index($value_str, $value)
       }
     } split(/\s+/, $tmp_values);
-
+    # The next row should be our 'connectors' ('/', '\')
     my $connections = shift @data;
+    # Make a copy of the next row, because the leaves will become the nodes on 
+    # the next iteration.
     my $leaves = $data[0];
-
+    # If there are no connections, we've hit the end of the input
     if (defined $connections) {
+      # check each value for possible leaf connections
       foreach my $idx (0 .. $#values) {
+        # Find our first node by value
         my $node = $binary_tree->find_node($values[$idx]->{'value'});
-
+        # establish a range to check for possible connections based on index
         my $l_bound = $idx == 0 ? 0: $values[$idx - 1]->{'idx'} + 1;
-        # Probably a problem in that last ternary condition. 
         my $r_bound = $idx == $#values ?
           length($leaves) - 1 : $values[$idx + 1]->{'idx'} + 1;
-
+        # slice of possible connections
         my @connection_split = split('', $connections);
         my @connection_range = @connection_split[$l_bound .. $r_bound];
         my $connections_joined = join'', grep { defined $_ } @connection_range;
-
+        # Find left or right
         my $l_idx = index($connections_joined, "/");
         my $r_idx = index($connections_joined, "\\");
-        
+        # Validate it 
         my $left = $l_idx != -1 && $l_idx < $values[$idx]->{'idx'};
         my $right = $r_idx != -1 && $r_idx > $values[$idx]->{'idx'};
-
+        # If found, find and push left leaf node
         if ($left) {
           my $range_length = $values[$idx]->{'idx'} - $l_bound + 1;
 
@@ -238,7 +262,7 @@ sub tree_from_strings {
 
           $node->add_left($l_val);
         }
-
+        # If found, find and push right leaf node
         if ($right) {
           my $offset = $values[$idx]->{'idx'} + 1;
           my $range_length = $r_bound - $offset + 1;
@@ -254,6 +278,7 @@ sub tree_from_strings {
   return $binary_tree;
 }
 
+# Return the original input, Binary_trees, and answers from test case
 sub parse_test_case {
   my $file_path = shift;
   my @displays;
