@@ -78,7 +78,7 @@ function isBST(binaryTree = {}) {
   });
   // Start recursion at the validated root
   return recurse(binaryTree.root);
- }
+}
 
 /**
  * Followed by some utilities to test our solution

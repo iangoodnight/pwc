@@ -418,7 +418,7 @@ Output: 1
 ...for positive tests.
 
 Test files may contain multiple tests, lines beginning with `#` will be ignored.
-See sample tests at `../test_cases/ch-2/` for furhter examples.
+See sample tests at `../test_cases/ch-2/` for further examples.
 
 #### Output
 
