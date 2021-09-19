@@ -252,7 +252,7 @@ function isBST(binaryTree = {}) {
 We are going to test our solution against a `BinaryTree` class that uses a 
 `BinaryNode` class as a helper.
 
-```javascipt
+```javascript
 
 // BinaryNode and BinaryTree classes to build test cases
 class BinaryNode {
