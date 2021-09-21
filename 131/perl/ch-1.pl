@@ -78,8 +78,10 @@ sub reduce_to_consecutive {
 
 ###################################################
 ###################################################
-
+#
+###################################################
 # Followed by some utilities to test our solution
+###################################################
 
 sub eval_input {
   my $input = shift;
@@ -88,14 +90,159 @@ sub eval_input {
     # Strip outer parenthesis
     $input =~ s/\(|\)//g;
     # split by comma and optional spaces
-    return [split /\s*,\s*/, $input];
+    return [ map int, split /\s*,\s*/, $input];
   }
   # Else, return a reference to an array of sets
+  return [
+    map {
+      [ map int, split /\s*,\s*/ ]
+    } $input =~ /\[([^\]]*)\]/g
+  ];
 }
 
-my $input = '(1, 2, 3, 4, 5)';
+sub parse_test_case {
+  # Parse file into arrays of inputs and answers
+  my $file_path = shift;
+  my @inputs;
+  my @answers;
 
+  open my $fh, "<", $file_path
+    or die "Could not open '$file_path' - $!\n";
 
-my $test = eval_input $input;
+  while (my $line = <$fh>) {
+    chomp $line;
+    # Skip comments
+    next if $line =~ /^\s*#|^\s*$/;
+    # Trim whitespace
+    $line =~ s/^\s+|\s+$//g;
+    # Parse line into list reference
+    my $parsed = eval_input $line;
+    # If there are more inputs than answers, assume line is an answer
+    if (scalar @inputs > scalar @answers) {
+      push @answers, $parsed;
+      next;
+    }
+    # Else, assume it an input
+    push @inputs, $parsed;
+  }
+  return (\@inputs, \@answers);
+}
 
-print Dumper $test;
+sub assert_deep_match {
+  my @first = @{ +shift };
+  my @second = @{ +shift };
+  my $match = 1;
+  # If lengths don't match, fail
+  if (scalar @first != scalar @second) {
+    return 0;
+  }
+  # Check each element
+  foreach my $idx (0 .. $#first) {
+    my $ref = ref $first[$idx];
+    # if element is a scalar check for match
+    if ($ref ne "ARRAY" && $first[$idx] ne $second[$idx]) {
+      $match = 0;
+    }
+    # if element is an array recurse
+    if ($ref eq "ARRAY") {
+      my $recursed = assert_deep_match($first[$idx], $second[$idx]);
+      $match = $recursed;
+    }
+    # Quit early
+    last if not $match;
+  }
+  return $match;
+}
+
+sub deep_print {
+  my @input = @{ +shift };
+
+  foreach my $idx (0 .. $#input) {
+    my $el = $input[$idx];
+    my $ref = ref $el;
+
+    if ($ref eq "ARRAY") {
+      print "[";
+      deep_print($el);
+      print "]";
+    } else {
+      print $el;
+    }
+    print ", " unless $idx == $#input;
+  }
+}
+
+sub print_results {
+  my $test_path = shift;
+  my @inputs = @{ +shift };
+  my @answers = @{ +shift };
+
+  print $test_path, "\n";
+  print "=" x length($test_path), "\n\n";
+
+  foreach my $idx (0 .. $#inputs) {
+    my $input = $inputs[$idx];
+    # Check for empty array (just to be safe)
+    next unless scalar @{ $input };
+
+    my $answer = $answers[$idx];
+    my $result = reduce_to_consecutive $input;
+
+    print "Input: (", join(", ", @{ $input }), ")\n";
+    print "Expected: (";
+    deep_print($answer);
+    print ")\n";
+    print "Result: (";
+    deep_print($result);
+    print ")\n";
+
+    if (assert_deep_match($answer, $result)) {
+      print color("green"), "Passed \x{2690}\n", color("reset");
+    } else {
+      print color("red"), "Failed \x{2715}\n", color("reset");
+    }
+    print "\n";
+  }
+  print "\n";
+}
+
+###################################################
+###################################################
+#
+###################################################
+# And our test runner
+###################################################
+
+sub main {
+  my $target = shift @ARGV // "../test_cases/ch-1";
+  # Handle single file target
+  if (-e -r -f $target) {
+    my ($inputs_array, $answers_array) = parse_test_case $target;
+    print_results $target, $inputs_array, $answers_array;
+    return;
+  }
+  # Handle directory target
+  if (-e -r -d _) {
+    # Check for trailing slash
+    $target =~ s/^(.*?)\/?$/$1\//;
+
+    opendir my $dh, $target
+      or die "Could not open '$target' - $!\n";
+
+    my @entries = readdir $dh;
+    closedir $dh;
+
+    foreach my $entry (sort @entries) {
+      # Skip the garbage
+      next if $entry eq "." or $entry eq "..";
+      my $path = $target . $entry;
+      my ($inputs_array, $answers_array) = parse_test_case $path;
+      print_results $path, $inputs_array, $answers_array;
+    }
+    return;
+  } else {
+    print "No tests found at $target\n";
+  }
+}
+
+main();
