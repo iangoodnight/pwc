@@ -91,54 +91,15 @@ sub eval_input {
     # challenge literally), return reference to anonymous list
     return [ map int, split /\s*,\s*/, $input ];
   }
-  # Else, return a reference to an array of lists
-  my @inputs;
-  while ($input =~ /\[([^\]]*)\]/g) {
-    push @inputs, [ map int, split /\s*,\s*/, $1 ];
+  # Else, return a reference to an array of sets
+  while ($input =~ /\[[^\]]/g) {
+    print $_, "\n";
   }
-  return \@inputs;
-}
-
-sub parse_test_case {
-   my $file_path = shift;
-   my @inputs;
-   my @answers;
-
-   open my $fh, "<", $file_path
-    or die "Could not open '$file_path' - $!\n";
-
-  while (my $line = <$fh>) {
-    chomp $line;
-    # Skip comments
-    next if $line =~ /^(\s*|\s*#.*)$/;
-    # Trim whitespace
-    $line =~ s/^\s+|\s+$//g;
-    my $parsed = eval_input $line;
-    # If inputs greater than answers, assume line is an answer
-    if (scalar @inputs > scalar @answers) {
-      push @answers, $parsed;
-      next;
-    }
-    # else, push to inputs
-    push @inputs, $parsed;
-  }
-  return [\@inputs, \@answers];
-}
-
-sub assert_match {
-  my (@set_1, @set_2, $flag) = ( @{ @_[0, 1] }, $_[2] );
-  my $match = 1;
-  print Dumper @set_1;
-  print Dumper @set_2;
-  print Dumper $flag;
 }
 
 my $input = '([1, 2], [3, 4], 5)';
-my @arr1 = qw(1 2 3 4);
-my @arr2 = qw(7 8 9);
 
-assert_match \@arr1, \@arr2, 0;
 
-# my $test = parse_test_case "../test_cases/ch-1/case-1.txt";
+my $test = eval_input $input;
 
-# print Dumper $test;
+print Dumper $test;
