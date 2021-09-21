@@ -89,6 +89,7 @@ sub eval_input {
   if (not ($input =~ /\[/)) {
     # Strip outer parenthesis
     $input =~ s/\(|\)//g;
+<<<<<<< HEAD
     # split by comma and optional spaces
     return [ map int, split /\s*,\s*/, $input];
   }
@@ -107,21 +108,50 @@ sub parse_test_case {
   my @answers;
 
   open my $fh, "<", $file_path
+=======
+    # split by comma and optional spaces, map values to int (just to take the
+    # challenge literally), return reference to anonymous list
+    return [ map int, split /\s*,\s*/, $input ];
+  }
+  # Else, return a reference to an array of lists
+  my @inputs;
+  while ($input =~ /\[([^\]]*)\]/g) {
+    push @inputs, [ map int, split /\s*,\s*/, $1 ];
+  }
+  return \@inputs;
+}
+
+sub parse_test_case {
+   my $file_path = shift;
+   my @inputs;
+   my @answers;
+
+   open my $fh, "<", $file_path
+>>>>>>> c8dd1c6ea3275a1720568c049b13f34fa622b832
     or die "Could not open '$file_path' - $!\n";
 
   while (my $line = <$fh>) {
     chomp $line;
     # Skip comments
+<<<<<<< HEAD
     next if $line =~ /^\s*#|^\s*$/;
     # Trim whitespace
     $line =~ s/^\s+|\s+$//g;
     # Parse line into list reference
     my $parsed = eval_input $line;
     # If there are more inputs than answers, assume line is an answer
+=======
+    next if $line =~ /^(\s*|\s*#.*)$/;
+    # Trim whitespace
+    $line =~ s/^\s+|\s+$//g;
+    my $parsed = eval_input $line;
+    # If inputs greater than answers, assume line is an answer
+>>>>>>> c8dd1c6ea3275a1720568c049b13f34fa622b832
     if (scalar @inputs > scalar @answers) {
       push @answers, $parsed;
       next;
     }
+<<<<<<< HEAD
     # Else, assume it an input
     push @inputs, $parsed;
   }
@@ -246,3 +276,28 @@ sub main {
 }
 
 main();
+=======
+    # else, push to inputs
+    push @inputs, $parsed;
+  }
+  return [\@inputs, \@answers];
+}
+
+sub assert_match {
+  my (@set_1, @set_2, $flag) = ( @{ @_[0, 1] }, $_[2] );
+  my $match = 1;
+  print Dumper @set_1;
+  print Dumper @set_2;
+  print Dumper $flag;
+}
+
+my $input = '([1, 2], [3, 4], 5)';
+my @arr1 = qw(1 2 3 4);
+my @arr2 = qw(7 8 9);
+
+assert_match \@arr1, \@arr2, 0;
+
+# my $test = parse_test_case "../test_cases/ch-1/case-1.txt";
+
+# print Dumper $test;
+>>>>>>> c8dd1c6ea3275a1720568c049b13f34fa622b832

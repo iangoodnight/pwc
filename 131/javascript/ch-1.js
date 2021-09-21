@@ -105,7 +105,7 @@ function parseTestCase(filePath = '') {
         }
         // Parse line
         const parsed = evalInput(trimmed);
-        // if inputs, greater than tests, assume line is a test
+        // if inputs greater than tests, assume line is a test
         if (inputs.length > tests.length) return [inputs, [...tests, parsed]];
         // else, push parsed to inputs
         return [[...inputs, parsed], tests];
