@@ -45,7 +45,6 @@ use warnings;
 use utf8;
 use open ":std", ":encoding(UTF-8)";
 use Term::ANSIColor;
-use Data::Dumper;
 
 ###################################################
 # Here our Consecutive Array reducer (PWC Solution)

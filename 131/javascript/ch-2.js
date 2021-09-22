@@ -43,19 +43,56 @@
 'use strict';
 
 /**
- * Find Pairs
+ * Node built-in dependencies
+ **/
+
+const readline = require('readline');
+
+/**
+ * Here, our Find Pairs function (PWC Solution)
  **/
 
 function findPairs(delimiters = '', string = '') {
-  console.log([...delimiters]);
-  const [openings, closings] = [...delimiters]
+  const [openSet, closeSet] = [...delimiters]
     .reduce(([open, close], el, idx) => {
-      if (idx % 2) return open.push(el);
-      return close.push(el);
-    }, [[], []]);
-
-  console.log(openings);
-  console.log(closings);
+      if (idx % 2) return [open, [...close, el]];
+      return [[...open, el], close];
+    }, [[], []]
+  );
+  return [...string].reduce(([open, close], el) => {
+    if (openSet.includes(el)) open.push(el);
+    if (closeSet.includes(el)) close.push(el);
+    return [open, close];
+  }, [[], []]);
 }
 
-findPairs('somestring');
+/**
+ * Utilities
+ **/
+
+function printResults(results = [[]]) {
+  results.forEach(result => {
+    console.log(result.join(''));
+  });
+}
+
+/**
+ * And our CLI
+ **/
+
+(function main() {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+  console.log('Welcome to delimiter search (type "exit" or Ctrl+c to quit).');
+  rl.question('Please provide delimiter string (ie: []{}**): ', (delims) => {
+    if (delims.trim() === 'exit') process.exit(0);
+    rl.question('Please provide search string: ', (string) => {
+      if (string.trim() === 'exit') process.exit(0);
+      console.log('Results: ');
+      printResults(findPairs(delims.trim(), string));
+      rl.close();
+    });
+  })
+})();
