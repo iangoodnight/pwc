@@ -53,17 +53,21 @@ const readline = require('readline');
  **/
 
 function findPairs(delimiters = '', string = '') {
-  const [openSet, closeSet] = [...delimiters]
-    .reduce(([open, close], el, idx) => {
+  const [openSet, closeSet] = [...delimiters].reduce(
+    ([open, close], el, idx) => {
       if (idx % 2) return [open, [...close, el]];
       return [[...open, el], close];
-    }, [[], []]
+    },
+    [[], []]
   );
-  return [...string].reduce(([open, close], el) => {
-    if (openSet.includes(el)) open.push(el);
-    if (closeSet.includes(el)) close.push(el);
-    return [open, close];
-  }, [[], []]);
+  return [...string].reduce(
+    ([open, close], el) => {
+      if (openSet.includes(el)) open.push(el);
+      if (closeSet.includes(el)) close.push(el);
+      return [open, close];
+    },
+    [[], []]
+  );
 }
 
 /**
@@ -94,5 +98,6 @@ function printResults(results = [[]]) {
       printResults(findPairs(delims.trim(), string));
       rl.close();
     });
-  })
+  });
 })();
+

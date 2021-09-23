@@ -79,16 +79,15 @@ function reduceToConsecutive(input = []) {
 function evalInput(input = '') {
   if (input.indexOf('[') === -1) {
     // No inner sets, input string, split and return
-    return input.replace(/\(|\)/g, '')
+    return input
+      .replace(/\(|\)/g, '')
       .split(/\s*,\s*/)
       .map((element) => parseInt(element)
     );
   }
   // Else, answer string, parse and return
-  return [...input.matchAll(/\[([^\]]*)\]/g)]
-    .map(match => match[1].split(/\s*,\s*/)
-      .map(el => parseInt(el)
-    )
+  return [...input.matchAll(/\[([^\]]*)\]/g)].map(match =>
+    match[1].split(/\s*,\s*/).map(el => parseInt(el))
   );
 }
 
@@ -96,8 +95,8 @@ function parseTestCase(filePath = '') {
   try {
     const data = fs.readFileSync(filePath, 'utf8');
 
-    const [ inputsArray, answersArray ] = data.split('\n')
-      .reduce(([inputs, tests], line) => {
+    const [ inputsArray, answersArray ] = data.split('\n').reduce(
+      ([inputs, tests], line) => {
         const trimmed = line.trim();
         // Discard comments and blank lines
         if (trimmed.charAt(0) === '#' || trimmed.length === 0) {
@@ -109,7 +108,8 @@ function parseTestCase(filePath = '') {
         if (inputs.length > tests.length) return [inputs, [...tests, parsed]];
         // else, push parsed to inputs
         return [[...inputs, parsed], tests];
-      }, [[], []]
+      },
+      [[], []]
     );
     // Grab lengths for comparison conveniences
     const { length: inputLength } = inputsArray;
@@ -124,7 +124,7 @@ function parseTestCase(filePath = '') {
       // Something went wrong parsing the test cases
       throw new Error (
         `Found ${inputLength} inputs and ${answerLength} answers.`
-      )
+      );
     }
     return [inputsArray, answersArray];
   } catch (error) {
@@ -151,7 +151,7 @@ function assertMatch(set1 = [], set2 = []) {
 }
 
 function printResults(testPath = '', inputs = [], expected = []) {
-  console.log(testPath)
+  console.log(testPath);
   console.log('='.repeat(testPath.length), '\n');
   // Iterates through and print relevant test data.
   inputs.forEach((input, idx) => {
@@ -203,3 +203,4 @@ const isDirectory = (filePath) => fs.lstatSync(filePath).isDirectory();
     console.log('Something went wrong: ', error);
   }
 })();
+

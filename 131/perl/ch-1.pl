@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 # ch-1.pl
 
-=begin summary
+=begin comment
 
  * https://theweeklychallenge.org/blog/perl-weekly-challenge-131/
  *
@@ -37,13 +37,13 @@
  *
  * my @output = ([1, 2, 3, 4, 5]);
 
-=end summary
+=end comment
 =cut
 
 use strict;
 use warnings;
 use utf8;
-use open ":std", ":encoding(UTF-8)";
+use open ':std', ':encoding(UTF-8)';
 use Term::ANSIColor;
 
 ###################################################
@@ -53,24 +53,29 @@ use Term::ANSIColor;
 sub reduce_to_consecutive {
   my @input = @{ +shift };
   my @reduced;
- 
+
   foreach my $element (@input) {
+
     # if `@reduced` is empty, push the first element as part of an anonymous
-    # list to start our comparisons 
-    if (not (scalar @reduced)) {
-      push(@reduced, [$element]);
+    # list to start our comparisons
+    if ( not( scalar @reduced ) ) {
+      push @reduced, [$element];
       next;
     }
+
     # grab a copy of the last element checked to test if consecutive
     my $last_element = $reduced[-1]->[-1];
-    # increment $last_element and compare to current element 
-    if (++$last_element eq $element) {
+
+    # increment $last_element and compare to current element
+    if ( ++$last_element eq $element ) {
+
       # if matched, push the current element to the last set
       push @{ $reduced[-1] }, $element;
       next;
     }
+
     # Else, push it as part of a new set.
-    push(@reduced, [$element]);
+    push @reduced, [$element];
   }
   return \@reduced;
 }
@@ -84,69 +89,88 @@ sub reduce_to_consecutive {
 
 sub eval_input {
   my $input = shift;
+
   # If no inner sets, return the split string as an array reference
-  if (not ($input =~ /\[/)) {
+  if ( not( $input =~ /\[/ ) ) {
+
     # Strip outer parenthesis
-    $input =~ s/\(|\)//g;
+    $input =~ s/[(]|[)]//g;
+
     # split by comma and optional spaces
-    return [ map int, split /\s*,\s*/, $input];
+    return [ map { int } split /\s*,\s*/, $input ];
   }
+
   # Else, return a reference to an array of sets
   return [
     map {
-      [ map int, split /\s*,\s*/ ]
-    } $input =~ /\[([^\]]*)\]/g
+      [ map { int } split /\s*,\s*/ ]
+      } $input =~ m{
+      \[       # opening bracket
+      ([^\]]*) # inner set
+      \]       # closing bracket
+    }gx
   ];
 }
 
 sub parse_test_case {
+
   # Parse file into arrays of inputs and answers
   my $file_path = shift;
   my @inputs;
   my @answers;
 
-  open my $fh, "<", $file_path
+  open my $fh, '<', $file_path
     or die "Could not open '$file_path' - $!\n";
 
-  while (my $line = <$fh>) {
+  while ( my $line = <$fh> ) {
     chomp $line;
+
     # Skip comments
-    next if $line =~ /^\s*#|^\s*$/;
+    next if $line =~ /^\s*#|^\s*$/m;
+
     # Trim whitespace
-    $line =~ s/^\s+|\s+$//g;
+    $line =~ s/^\s+|\s+$//gm;
+
     # Parse line into list reference
     my $parsed = eval_input $line;
+
     # If there are more inputs than answers, assume line is an answer
-    if (scalar @inputs > scalar @answers) {
+    if ( scalar @inputs > scalar @answers ) {
       push @answers, $parsed;
       next;
     }
+
     # Else, assume it an input
     push @inputs, $parsed;
   }
-  return (\@inputs, \@answers);
+  return ( \@inputs, \@answers );
 }
 
 sub assert_deep_match {
-  my @first = @{ +shift };
-  my @second = @{ +shift };
-  my $match = 1;
+  my @first_list  = @{ +shift };
+  my @second_list = @{ +shift };
+  my $match       = 1;
+
   # If lengths don't match, fail
-  if (scalar @first != scalar @second) {
+  if ( scalar @first_list != scalar @second_list ) {
     return 0;
   }
+
   # Check each element
-  foreach my $idx (0 .. $#first) {
-    my $ref = ref $first[$idx];
+  foreach my $idx ( 0 .. $#first_list ) {
+    my $ref = ref $first_list[$idx];
+
     # if element is a scalar check for match
-    if ($ref ne "ARRAY" && $first[$idx] ne $second[$idx]) {
+    if ( $ref ne 'ARRAY' && $first_list[$idx] ne $second_list[$idx] ) {
       $match = 0;
     }
+
     # if element is an array recurse
-    if ($ref eq "ARRAY") {
-      my $recursed = assert_deep_match($first[$idx], $second[$idx]);
+    if ( $ref eq 'ARRAY' ) {
+      my $recursed = assert_deep_match( $first_list[$idx], $second_list[$idx] );
       $match = $recursed;
     }
+
     # Quit early
     last if not $match;
   }
@@ -156,53 +180,58 @@ sub assert_deep_match {
 sub deep_print {
   my @input = @{ +shift };
 
-  foreach my $idx (0 .. $#input) {
-    my $el = $input[$idx];
+  foreach my $idx ( 0 .. $#input ) {
+    my $el  = $input[$idx];
     my $ref = ref $el;
 
-    if ($ref eq "ARRAY") {
-      print "[";
+    if ( $ref eq 'ARRAY' ) {
+      print '[';
       deep_print($el);
-      print "]";
-    } else {
+      print ']';
+    }
+    else {
       print $el;
     }
-    print ", " unless $idx == $#input;
+    if ( $idx != $#input ) { print ',  ' }
   }
+  return;
 }
 
 sub print_results {
   my $test_path = shift;
-  my @inputs = @{ +shift };
-  my @answers = @{ +shift };
+  my @inputs    = @{ +shift };
+  my @answers   = @{ +shift };
 
   print $test_path, "\n";
-  print "=" x length($test_path), "\n\n";
+  print '=' x length($test_path), "\n\n";
 
-  foreach my $idx (0 .. $#inputs) {
+  foreach my $idx ( 0 .. $#inputs ) {
     my $input = $inputs[$idx];
+
     # Check for empty array (just to be safe)
-    next unless scalar @{ $input };
+    next if scalar @{$input} == 0;
 
     my $answer = $answers[$idx];
     my $result = reduce_to_consecutive $input;
 
-    print "Input: (", join(", ", @{ $input }), ")\n";
-    print "Expected: (";
+    print 'Input: (', join( ', ', @{$input} ), ")\n";
+    print 'Expected: (';
     deep_print($answer);
     print ")\n";
-    print "Result: (";
+    print 'Result: (';
     deep_print($result);
     print ")\n";
 
-    if (assert_deep_match($answer, $result)) {
-      print color("green"), "Passed \x{2690}\n", color("reset");
-    } else {
-      print color("red"), "Failed \x{2715}\n", color("reset");
+    if ( assert_deep_match( $answer, $result ) ) {
+      print color('green'), "Passed \x{2690}\n", color('reset');
+    }
+    else {
+      print color('red'), "Failed \x{2715}\n", color('reset');
     }
     print "\n";
   }
   print "\n";
+  return;
 }
 
 ###################################################
@@ -213,17 +242,20 @@ sub print_results {
 ###################################################
 
 sub main {
-  my $target = shift @ARGV // "../test_cases/ch-1";
+  my $target = shift @ARGV // '../test_cases/ch-1';
+
   # Handle single file target
-  if (-e -r -f $target) {
-    my ($inputs_array, $answers_array) = parse_test_case $target;
+  if ( -e -r -f $target ) {
+    my ( $inputs_array, $answers_array ) = parse_test_case $target;
     print_results $target, $inputs_array, $answers_array;
     return;
   }
+
   # Handle directory target
-  if (-e -r -d _) {
+  if ( -e -r -d _ ) {
+
     # Check for trailing slash
-    $target =~ s/^(.*?)\/?$/$1\//;
+    $target =~ s/^(.*?)\/?$/$1\//ms;
 
     opendir my $dh, $target
       or die "Could not open '$target' - $!\n";
@@ -231,17 +263,21 @@ sub main {
     my @entries = readdir $dh;
     closedir $dh;
 
-    foreach my $entry (sort @entries) {
+    foreach my $entry ( sort @entries ) {
+
       # Skip the garbage
-      next if $entry eq "." or $entry eq "..";
+      next if $entry eq '.' or $entry eq '..';
       my $path = $target . $entry;
-      my ($inputs_array, $answers_array) = parse_test_case $path;
+      my ( $inputs_array, $answers_array ) = parse_test_case $path;
       print_results $path, $inputs_array, $answers_array;
     }
     return;
-  } else {
+  }
+  else {
     print "No tests found at $target\n";
   }
+  return;
 }
 
 main();
+

@@ -53,16 +53,18 @@ use Data::Dumper;
 #################################################
 
 sub find_delims {
-  my ($delim_string, $search_string) = @_;
+  my ( $delim_string, $search_string ) = @_;
   my @delims = split //, $delim_string;
   my @open_set;
   my @close_set;
+
   # Partion delimiters into openings and closings
-  foreach my $idx (0 .. $#delims) {
+  foreach my $idx ( 0 .. $#delims ) {
     my $char = $delims[$idx];
-    if ($idx % 2) {
+    if ( $idx % 2 ) {
       push @close_set, $char;
-    } else {
+    }
+    else {
       push @open_set, $char;
     }
   }
@@ -72,15 +74,15 @@ sub find_delims {
   my @found_close;
 
   foreach my $char (@search) {
-    if (grep $_ eq $char, @open_set) {
+    if ( grep { $_ eq $char } @open_set ) {
       push @found_open, $char;
     }
-    if (grep $_ eq $char, @close_set) {
+    if ( grep { $_ eq $char } @close_set ) {
       push @found_close, $char;
     }
   }
 
-  return (\@found_open, \@found_close);
+  return ( \@found_open, \@found_close );
 }
 
 #################################################
@@ -91,9 +93,11 @@ sub find_delims {
 #################################################
 
 sub print_results {
-  foreach (@_) {
-    print join('', @$_), "\n";
+  my @results = @_;
+  foreach (@results) {
+    print join( q{}, @{$_} ), "\n";
   }
+  return;
 }
 
 #################################################
@@ -106,18 +110,20 @@ sub print_results {
 sub main {
   while (1) {
     print "Welcome to delimiter search (type 'exit' or Ctrl+c to quit).\n";
-    print "Please provide delimiter string (ie: ''[]{}<>**): ";
+    print q{Please provide delimiter string (ie: ''[]{}<>**): };
     my $delimiter_string = <>;
     chomp $delimiter_string;
-    $delimiter_string =~ s/^\s+|\s+$//g;
-    last if $delimiter_string eq "exit";
-    print "Please provide search string: ";
+    $delimiter_string =~ s/^\s+|\s+$//gm;
+    last if $delimiter_string eq 'exit';
+    print 'Please provide search string: ';
     my $search_string = <>;
     chomp $search_string;
-    last if $search_string eq "exit";
+    last if $search_string eq 'exit';
     print "Results:\n";
     print_results find_delims $delimiter_string, $search_string;
   }
+  return;
 }
 
 main();
+
