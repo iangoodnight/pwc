@@ -192,7 +192,7 @@ sub deep_print {
     else {
       print $el;
     }
-    if ( $idx != $#input ) { print ',  ' }
+    if ( $idx != $#input ) { print ', ' }
   }
   return;
 }
