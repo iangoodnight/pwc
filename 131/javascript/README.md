@@ -1,7 +1,5 @@
 # [Perl Weekly Challenge - 131] _JavaScript Edition_
 
-
-
 Five weeks into the Perl Weekly Challenge, my Perl is getting a lot sharper, but
 I still have a lot of fun coming up with JavaScript solutions.  Generally
 speaking, I try to make my code as declarative and self-documenting as possible,
@@ -54,18 +52,18 @@ const output = [[1, 2, 3, 4, 5]];
 
 ### Solution
 
-When I am working with an array as input, my first question is am I using `map`,
-`filter`, `reduce`, or `forEach`, as these are functional operations that, 
-between the four of them, are generally non-destructive and solve most use
-cases.  Generally speaking, if my output is an `Array` the same length as my
-input, I am using `map`.  If my output is supposed to be a shorter array, I'm
-probably going to reach for `filter`.  If my operation calls for, or causes
-side-effects, `forEach` is probably the right choice.  But, for anything else,
-I reach for `reduce`.  The general idea with the `reduce` method, is that you
-are reducing an array to a single value like a `sum` or a `max` value.  Really
-though, you can use reduce to return anything else that takes an array as input.
-Here, we use a `reduce` function to reduce our array to an array of arrays as
-described in the examples above.
+When I am working with an array as input, my first question is, am I using
+`map`, `filter`, `reduce`, or `forEach`, as these are functional operations
+that,  between the four of them, are generally non-destructive and solve most use
+cases.  Generally speaking, I am using a map if my output is meant to be an
+`Array` the same length as my input, I am using `map`.  If my output is supposed
+to be a shorter array, I'm probably going to reach for `filter`.  If my
+operation calls for or causes side effects, `forEach` is probably the right
+choice.  But, for anything else, I reach for `reduce`.  The general idea with
+the `reduce` method to reduce an array to a single value like a `sum` or a `max`
+value.  Really though, you can use reduce to return anything else that takes an
+array as input.  Here, we use a `reduce` function to reduce our array to an
+array of arrays as described in the examples above.
 
 ```javascript
 // Task 1 Solution
@@ -97,11 +95,11 @@ The comments, though a little gratuitous, should make our operations clear.
 
 Running `./ch-1.js` tests our solution against the sample test cases found at
 `../test_cases/ch-1/`.  Optionally, `ch-1.js` can be run with a path argument
-pointing to a test file or directory of test files (i.e.: `./ch-1.js ./test`).
+pointing to a test file or directory of test files (i.e., `./ch-1.js ./test`).
 Our test files must be comprised of lines alternating between inputs and 
-expected results formatted as shown in the examples above (i.e.: `(1, 2, 4)` and
+expected results formatted as shown in the examples above (i.e., `(1, 2, 4)` and
 `([1, 2], 4)`). It looks a little funny in JavaScript, but this is the _Perl_
-Weekly Challenge Club after all.  Lines beginning with `#` and blank lines will
+Weekly Challenge Club, after all.  Lines beginning with `#` and blank lines will
 be ignored.  Lines are parsed with a helper function, `eval_input`.
 
 ```javascript
@@ -182,14 +180,14 @@ Passed ⚐
  
 ```
 
-Our output shows all our tests as passing indicating our solution either our
-solution is correct or our testing methods are flawed.
+Our output shows all our tests as passing, indicating either that our solution 
+is correct or our testing methods are flawed.
 
 ## Task 2 > Find Pairs
 
 You are given a string of delimiter pairs and a string to search.
 
-Write a script to return two strings the first with any characters matching
+Write a script to return two strings, the first with any characters matching
 the "opening character" set, the second with any matching the "closing 
 character" set.
 
@@ -260,16 +258,16 @@ function findPairs(delimiters = '', string = '') {
 
 ### `ch-2.js`
 
-Generally speaking, when approaching these challenges I have been consistently
+Generally speaking, when approaching these challenges, I have been consistently
 writing a solution, creating a directory of test cases, and writing my
 submission framed as a series of tests run against the solution.  So, in the
 solution for the first task, running the file `ch-1.js` automatically looks for
 that directory and those test cases unless it is run with a path argument
-pointing to some other, local test.  That choice was mainly just an excuse to
+pointing to some other local test.  That choice was mainly just an excuse to
 have some fun parsing different types of input files.  For `ch-2.js`, however,
 the prospect of coming up with a bunch of delimiter tests cases seemed
-dangerously boring.  So, instead `ch-2.js` is written as an interactive CLI.
-Running `./ch-2.js` starts our utility.  Sample output seen below.
+dangerously boring.  So, instead, `ch-2.js` is written as an interactive CLI.
+Running `./ch-2.js` starts our utility.  Sample output is shown below.
 
 #### Output
 
@@ -293,7 +291,7 @@ Please provide delimiter string (ie: ''[]{}<>**): exit"
 
 ## Coming Soon
 
-Hopefully by next week, I will be setup to start posting some of these on my
+Hopefully, by next week, I will be set up to start posting some of these on my
 own, as of yet non-existent, blog.  It is my hope to explore programming in
 general, using the PWC as an excuse to explore more `JavaScript`, `Perl`, and
 hopefully some `Ruby`, `Bash`, and `Powershell` as well.  Stay tuned.

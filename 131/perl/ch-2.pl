@@ -46,7 +46,6 @@
 use strict;
 use warnings;
 use utf8;
-use Data::Dumper;
 
 #################################################
 # Here, our Find Delims subroutine (PWC Solution)
