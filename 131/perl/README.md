@@ -93,7 +93,7 @@ sub reduce_to_consecutive {
 
 Hopefully, this solution is as easy to ready as it was fun to write.
 
-### ch-1.pl
+### `ch-1.pl`
 
 Running `./ch-1.pl` tests our solution against the sample test cases found at
 `../test_cases/ch-1/`.  Optionally, `ch-1.pl` can be run with a path argument
@@ -299,9 +299,9 @@ pointing to some other, local test.  That choice was mainly just an excuse to
 write more perl each week.  It also allowed me to practice a couple different
 things outside of the specific challenge (and waste more time I should spend
 doing work).  For `ch-2.pl`, however, the prospect of coming up with a bunch of
-delimiter tests cases seemed dangerously boring.  So, instead `ch-2` is written
-as an interactive CLI.  Running `./ch-2.pl` starts our utility.  Sample output
-seen below.
+delimiter tests cases seemed dangerously boring.  So, instead `ch-2.pl` is
+written as an interactive CLI.  Running `./ch-2.pl` starts our utility.  Sample
+output seen below.
 
 #### Output
 

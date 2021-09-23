@@ -9,7 +9,7 @@
  *
  * You are given a sorted list of unique positive integers.
  *
- * Write a scipt to return lists of arrays where the arrays are consecutive
+ * Write a script to return lists of arrays where the arrays are consecutive
  * integers.
  *
  * Example 1:
@@ -53,7 +53,7 @@ const path = require('path');
 
 function reduceToConsecutive(input = []) {
   return input.reduce((reduced, element) => {
-    // If no arrays in `reduced`, initialize our firt set and return.
+    // If no arrays in `reduced`, initialize our first set and return.
     if (reduced.length === 0) return [[element]];
     // Otherwise, pop off the last set for inspection.
     const lastSet = reduced.pop();
