@@ -89,15 +89,18 @@ function printResults(results = [[]]) {
     input: process.stdin,
     output: process.stdout,
   });
-  console.log('Welcome to delimiter search (type "exit" or Ctrl+c to quit).');
-  rl.question('Please provide delimiter string (ie: []{}**): ', (delims) => {
-    if (delims.trim() === 'exit') process.exit(0);
-    rl.question('Please provide search string: ', (string) => {
-      if (string.trim() === 'exit') process.exit(0);
-      console.log('Results: ');
-      printResults(findPairs(delims.trim(), string));
-      rl.close();
+  function run() {
+    console.log('Welcome to delimiter search (type "exit" or Ctrl+c to quit).');
+    rl.question('Please provide delimiter string (ie: []{}**): ', (delims) => {
+      if (delims.trim() === 'exit') process.exit(0);
+      rl.question('Please provide search string: ', (string) => {
+        if (string.trim() === 'exit') process.exit(0);
+        console.log('Results: ');
+        printResults(findPairs(delims.trim(), string));
+        run();
+      });
     });
-  });
+  }
+  run();
 })();
 
