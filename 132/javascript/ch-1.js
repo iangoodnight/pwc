@@ -51,19 +51,21 @@
 /**
  * Node built-in dependencies
  **/
+
 const readline = require('readline');
 
 /**
  * Our PWC solution
  **/
+
 function returnMirrorDates(
   birthday,          // Input (birthdate)
   today = new Date() // Optional 'today' arg to match example inputs for testing
 ) {
-  const inputRe = new RegExp('^\d{4}/\d{2}/\d{2}');
+  const inputRe = /^\d{4}\/\d{2}\/\d{2}/;
   // Validate input
   if (!inputRe.test(birthday)) {
-    throw new Error('Input must be in the format "yyyy-MM-dd"');
+    throw new Error('Input must be in the format "yyyy/MM/dd"');
   }
   // Convert input to 'Date' object
   const birthDate = new Date(birthday);
@@ -80,7 +82,7 @@ function returnMirrorDates(
     [
       // Stringify and format
       prevDate.getFullYear(),
-      String(prevDate.getMonth() + 1).padStart(2, '0'),
+      String(prevDate.getMonth() + 1).padStart(2, '0'), // Padded for formatting
       String(prevDate.getDate()).padStart(2, '0')
     ].join('/'),
     [
@@ -101,9 +103,50 @@ function printResults([prev, next] = []) {
     'current age on ' + next + '.'
   );
 }
+
+function repl() {
+  return new Promise((resolve) => {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+    const inputRe = /^\d{4}\/[01][0-9]\/[0-3][0-9]/;
+
+    const help = 'Enter your birthdate (yyyy/MM/dd) or type "exit" to quit.';
+
+    console.log(help);
+    rl.setPrompt('/> ');
+    rl.prompt();
+    rl.on('line', (line) => {
+      if (line === 'exit' || line === 'quit' || line === 'q' || line === 'n') {
+        return rl.close();
+      } else if (line === 'y') {
+        console.log(help);
+        rl.prompt();
+      } else if (!inputRe.test(line.trim())) {
+        console.log(`I don't recognize "${line}"`);
+        console.log(help);
+        rl.prompt();
+      } else {
+        const results = returnMirrorDates(line);
+
+        printResults(results);
+        console.log('Go again? (y/n)');
+      }
+    }).on('close', () => {
+      console.log('Goodbye.');
+      resolve();
+    });
+  });
+}
+
 /**
  * And our test runner
  **/
-(function main() {
-  console.log(returnMirrorDates());
+(async function main() {
+  try {
+    await repl();
+  } catch (error) {
+    console.log(error);
+  }
 })();
