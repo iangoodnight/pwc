@@ -77,7 +77,7 @@ sub return_int_sqr_root {
 sub print_banner {
   my $message  = 'Integer Square Root Calculator';
   my $border   = q{=} x length $message;
-  my $empty = q{};
+  my $empty    = q{};
   my @elements = ( $empty, $border, $message, $border, $empty, $empty );
 
   return print color('cyan'), join( "\n", @elements ), color('reset');
@@ -111,7 +111,7 @@ sub main {
     $line =~ s{
       ^\s+ # Remove leading whitespace
       |
-      \s+$ # remove trailing whitespace
+      \s+$ # Remove trailing whitespace
     }{}gmx;
 
     if ( $line eq 'exit' || $line eq 'n' ) {

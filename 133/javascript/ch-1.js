@@ -47,16 +47,17 @@ function returnIntSqrRoot(input) {
   // Validate input
   if (!Number.isInteger(+input) || +input < 0) {
     throw new Error(
-      'returnIntSqrRoot expects a positive integer as an argument'
+      'returnIntSqrRoot expects a positive integer as an argument',
     );
   }
   // Crawl through squares starting with 0
   let i = 0;
   while (i * i <= +input) {
-    i++;
+    i += 1;
   }
   // return the highest passing number
-  return --i;
+  i -= 1;
+  return i;
 }
 
 /**
@@ -70,7 +71,7 @@ function repl() {
       output: process.stdout,
     });
     rl.setPrompt(
-      'Enter a positive integer (or, type "\x1b[33mexit\x1b[0m" to quit)> '
+      'Enter a positive integer (or, type "\x1b[33mexit\x1b[0m" to quit)> ',
     );
     rl.prompt();
     rl.on('line', (line) => {
@@ -85,7 +86,9 @@ function repl() {
       } else {
         console.log('Arguments must be positive integers only.');
       }
-      process.stdout.write('Try again? (\x1b[33my\x1b[0m/\x1b[33mn\x1b[0m)> ');
+      return process.stdout.write(
+        'Try again? (\x1b[33my\x1b[0m/\x1b[33mn\x1b[0m)> ',
+      );
     }).on('close', () => {
       console.log('Goodbye.');
       resolve();
@@ -102,7 +105,7 @@ function printBanner() {
 
   const reset = '\x1b[0m';
 
-  const banner = '\n' + outline + '\n' + message + '\n' + outline + '\n';
+  const banner = `\n${outline}\n${message}\n${outline}\n`;
 
   console.log(fgCyan + banner + reset);
 }
@@ -116,4 +119,3 @@ function printBanner() {
     process.exit(1);
   }
 })();
-

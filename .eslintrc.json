@@ -1,8 +1,15 @@
 {
   "extends": ["airbnb", "prettier"],
+  "parserOptions": {
+    "sourceType": "script",
+    "ecmaFeatures": {
+      "impliedStrict": false
+    }
+  },
   "plugins": ["prettier"],
   "root": true,
   "rules": {
+    "no-console": "off",
     "prettier/prettier": ["error"],
     "spaced-comment": [
       "error",
@@ -10,6 +17,7 @@
       {
         "exceptions": ["*"]
       }
-    ]
+    ],
+    "strict": ["error", "global"]
   }
 }
