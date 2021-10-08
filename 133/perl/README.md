@@ -1,8 +1,8 @@
 # [Perl Weekly Challenge - 133]
 
-Trigger warning: There's lots of math in this weeks challenges.  Recovering math
-addicts may want to avoid these solutions.  Personally, I've always been more 
-the "hooked on phonics" type, so it was fun brushing up on some of these 
+**Trigger warning:** There's lots of math in this week's challenges.  Recovering
+math addicts may want to avoid these solutions.  Personally, I've always been
+more  the "hooked on phonics" type, so it was fun brushing up on some of these 
 mathematical concepts as I worked through my solutions.
 
 ## Task 1 > Integer Square Root
@@ -33,10 +33,10 @@ Output: 10
 
 I wasn't familiar with the idea of integer square roots, but after checking out
 the linked Wikipedia reference ([here]), I found that the term is equivalent to
-to the largest integer square root that is less than or equal to our given
-input (a square root floor, so to speak.  There are likely more elegant, 
-mathematical approaches to this problem, but my approach was to just start at 0
-and check incrementing squares until I exceeded the input.
+the largest integer square root that is less than or equal to our given input
+(a square root floor, so to speak.  There are likely more elegant, mathematical
+approaches to this problem, but my approach was to just start at 0 and check
+incrementing squares until I exceeded the input.
 
 ```perl
 
@@ -68,10 +68,10 @@ sub return_int_sqr_root {
 
 #### `ch-1.pl`
 
-Generally I try to write a little test runner and some test cases, but in this
-case it felt like overkill, so instead running `./ch-1.pl` initiates a mini
+Generally, I try to write a little test runner and some test cases, but in this
+case, it felt like overkill, so instead running `./ch-1.pl` initiates a mini
 REPL.  The REPL prompts for input and returns the integer square root.  Sample
-output shown below:
+output is shown below:
 
 ```
 $> ./ch-1.pl
@@ -111,10 +111,10 @@ According to Wikipedia:
 At first, the language of this challenge had me feeling a little out of my
 depths.  But, breaking down the problem, I realized that it wasn't as
 complicated as I had initially believed.  It was clear that I needed a
-subroutine to reduce a given number to it's prime factors, a subroutine to
-reduce a number to the sum of its digits, and that between those two functions
+subroutine to reduce a given number to its prime factors, a subroutine to
+reduce a number to the sum of its digits, and that between those two functions,
 I could find these "Smith Numbers."  Admittedly, my first solutions were all
-incorrect as I glazed right over that phrase "composite number" which, I've
+incorrect as I glazed right over that phrase "composite number," which, I've
 since learned, is a fancy way of saying "ain't prime."
 
 ```perl
@@ -216,8 +216,8 @@ wasn't sure the solution even worked until I compared the output against a list
 of `Smith Numbers` I found online, so running `./ch-2.pl` will output the first
 10 `Smith Numbers` without much in the way of pomp or circumstance.  Optionally,
 you can run `./ch-2.pl` with a number argument to display more or less `Smith
-Numbers` (ie, `./ch-2.pl 100` to return the first 100 `Smith Numbers`).  Sample
-output shown below:
+Numbers` (i.e., `./ch-2.pl 100` to return the first 100 `Smith Numbers`).
+Sample output is shown below:
 
 ```
 $> ./ch-2.pl 10
@@ -227,7 +227,7 @@ The first 10 Smith Numbers are 4, 22, 27, 58, 85, 94, 121, 166, 202, and 265.
 ## Closing
 
 I had a lot of fun with these challenges and picked up a little bit of math that
-I might have otherwise avoided like the plague.  Thanks again PWC.
+I might have otherwise avoided like the plague.  Thanks again, PWC.
 
 [Perl Weekly Challenge]: https://theweeklychallenge.org/blog/perl-weekly-challenge-133/
 [here]: https://en.wikipedia.org/wiki/Integer_square_root
