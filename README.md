@@ -2,6 +2,7 @@
 
 Staging ground for PWC submissions.
 
+<<<<<<< HEAD
 Challenge  | JavaScript | Perl    | README
 ---------- | ---------- | ------- | ------
 [127] ch-1 | &#9745;    | &#9745; | &#9754;
@@ -18,6 +19,13 @@ Challenge  | JavaScript | Perl    | README
 [132] ch-2 | &#9744;    | &#9744; | &#9744;
 [133] ch-1 | &#9745;    | &#9745; | &#9745;
 [133] ch-1 | &#9745;    | &#9745; | &#9745;
+=======
+Challenge  | JavaScript | Perl   | README
+---------- | ---------- | ------ | ------
+[127] ch-1 | &#9745;     | &#9745 | &#9754
+[127] ch-2 | &#9745     | &#9745 | &#9745
+[128] ch-1 | &#9744     | &#9744 | &#9744
+>>>>>>> e4fc10bfae61154b542fe971c824d3d397130c77
 
 [The Weekly Challenge]: https://theweeklychallenge.org/
 [127]: https://theweeklychallenge.org/blog/perl-weekly-challenge-127/
