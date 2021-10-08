@@ -59,7 +59,7 @@ function sumDigits(number) {
 function identifySmithNumbers(limit = 10) {
   const smithNumbers = [];
 
-  let test = 2;
+  let test = 4; // Smith numbers are composite numbers, so skip the primes
   while (smithNumbers.length < limit) {
     const primeFactorsArr = primeFactors(test);
 
