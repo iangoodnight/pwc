@@ -22,9 +22,9 @@
 
 # First, a utility method to find and return our prime factors
 def prime_factors(number)
-  factors = [], divisor = 2 # Starting with 2, divide and check modulo
-  while number >= 2
-    if (number % divisor).zero? # If modulo is zero, push `divisor` to `factors`
+  factors = []
+  while number >= 2 # Starting with 2, divide and check modulo
+    if (number % divisor ||= 2).zero? # If modulo is zero, push to `factors`
       factors.push(divisor)
       number /= divisor
     else
@@ -46,8 +46,9 @@ end
 
 # Find `Smith Numbers` with our methods, `prime_factors`, `sum_digits`,
 # `sum_primes`
-def find_smith_numbers(limit: 10)
-  smith_numbers = [], test = 4
+def find_smith_numbers(limit)
+  smith_numbers = []
+  test = 4
   while smith_numbers.length < limit.to_i
     primes = prime_factors(test)
     prime_sum = sum_primes(primes)
@@ -71,10 +72,10 @@ end
 # Main
 ################################################################################
 
-def main(limit: 10)
-  smith_numbers = find_smith_numbers(limit: limit.to_i)
+def main(limit)
+  smith_numbers = find_smith_numbers(limit.to_i)
   result_str = list_with_oxford(smith_numbers)
-  puts "The first #{limit} Smith Numbers are #{result_str}."
+  puts "The first #{limit} Smith Number(s) are #{result_str}."
 end
 
-main(limit: ARGV.shift)
+main(ARGV.shift || 10)

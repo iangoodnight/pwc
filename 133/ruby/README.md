@@ -1,4 +1,4 @@
-# [Perl Weekly Challenge - 133]
+# [Perl Weekly Challenge - 133] _Ruby Edition_
 
 This is my first crack at a Ruby submission for the PWC.  I'm still pretty new
 to the language, and porting my Perl to Ruby is a fun way to explore the syntax.
@@ -91,9 +91,9 @@ According to Wikipedia:
 
 # First, a utility method to find and return our prime factors
 def prime_factors(number)
-  factors = [], divisor = 2 # Starting with 2, divide and check modulo
-  while number >= 2
-    if (number % divisor).zero? # If modulo is zero, push `divisor` to `factors`
+  factors = []
+  while number >= 2 # Starting with 2, divide and check modulo
+    if (number % divisor ||= 2).zero? # If modulo is zero, push to `factors`
       factors.push(divisor)
       number /= divisor
     else
@@ -116,7 +116,8 @@ end
 # Find `Smith Numbers` with our methods, `prime_factors`, `sum_digits`,
 # `sum_primes`
 def find_smith_numbers(limit: 10)
-  smith_numbers = [], test = 4
+  smith_numbers = []
+  test = 4
   while smith_numbers.length < limit.to_i
     primes = prime_factors(test)
     prime_sum = sum_primes(primes)
@@ -133,7 +134,13 @@ end
 
 Running `./ch-2.rb` outputs the first 10 `Smith Numbers`.  Optionally, a number
 argument can be provided to output an arbitrary number of `Smith Numbers` (i.e,
-`./ch-2 27` print out the first 27 `Smith Numbers`).
+`./ch-2 27` print out the first 27 `Smith Numbers`).  Sample output is shown
+below:
 
-[Perl Weekly Challenge]: https://theweeklychallenge.org/blog/perl-weekly-challenge-133/
+```
+$> ./ch-2.rb 10
+The first 10 Smith Number(s) are 4, 22, 27, 58, 85, 94, 121, 166, 202, and 265.
+```
+
+[Perl Weekly Challenge - 133]: https://theweeklychallenge.org/blog/perl-weekly-challenge-133/
 [here]: https://en.wikipedia.org/wiki/Integer_square_root

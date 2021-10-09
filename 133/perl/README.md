@@ -229,5 +229,5 @@ The first 10 Smith Numbers are 4, 22, 27, 58, 85, 94, 121, 166, 202, and 265.
 I had a lot of fun with these challenges and picked up a little bit of math that
 I might have otherwise avoided like the plague.  Thanks again, PWC.
 
-[Perl Weekly Challenge]: https://theweeklychallenge.org/blog/perl-weekly-challenge-133/
+[Perl Weekly Challenge - 133]: https://theweeklychallenge.org/blog/perl-weekly-challenge-133/
 [here]: https://en.wikipedia.org/wiki/Integer_square_root
