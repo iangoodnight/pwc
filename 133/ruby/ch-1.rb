@@ -30,15 +30,50 @@
 # Input: $N = 101
 # Output: 10
 
+################################################################################
+# Our PWC Solution
+################################################################################
+
 def int_sqr_root(input)
   if !input.integer? || !input.positive?
     puts 'Input must be a positive integer'
     return
   end
-  puts 'Pass!'
+  # Crawl through squares starting with 0
+  i = 0
+  (i += 1) while i * i <= input
+  # Return the highest passing number
+  i - 1
 end
 
-int_sqr_root(21)
-int_sqr_root(1)
-int_sqr_root(-21)
-int_sqr_root(2.1)
+################################################################################
+# REPL
+################################################################################
+
+def print_banner
+  message = 'Integer Square Root Calculator'
+  outline = '=' * message.length
+  puts "\e[36m\n#{outline}\n#{message}\n#{outline}\n\e[0m"
+end
+
+prompt = "Enter a positive integer (or, type \"\e[33mexit\e[0m\" to quit)> "
+check_continue = "Try again? (\e[33my\e[0m/\e[33mn\e[0m)> "
+
+print_banner
+print prompt
+
+loop do
+  input = gets.chomp
+  input.strip!
+  case input
+  when /\A\d+\z/
+    puts "Integer square root: #{int_sqr_root(input.to_i)}"
+    print check_continue
+  when /\Ay\z/
+    print prompt
+  when /\A(exit|n)\z/
+    puts 'Goodbye.'
+    exit
+  else puts 'Arguments must be positive integers only.'
+  end
+end
