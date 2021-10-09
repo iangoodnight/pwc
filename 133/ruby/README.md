@@ -29,7 +29,7 @@ Output: 10
 
 ### Solution
 
-This is pretty much a direct transalation of my Perl solution, so it may be that
+This is pretty much a direct translation of my Perl solution, so it may be that
 I am missing some opportunities here. 
 
 ```ruby
