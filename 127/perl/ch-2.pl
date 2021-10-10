@@ -38,23 +38,23 @@ use JSON qw( decode_json );
 
 # Here, our subroutine to test our intervals (PWC solution)
 sub find_conflict_intervals {
-  my $set_ref = shift @_;
+  my $set_ref   = shift @_;
   my @conflicts = ();
-  my @passed = ();
-  if (reftype $set_ref ne "ARRAY") {
+  my @passed    = ();
+  if ( reftype $set_ref ne "ARRAY" ) {
     print "Array reference not found\n";
     return 0;
   }
   foreach my $set (@$set_ref) {
-    my ($a1, $a2) = sort { $a <=> $b } @$set;
+    my ( $a1, $a2 ) = sort { $a <=> $b } @$set;
     my $conflict = grep {
-      my ($b1, $b2) = sort { $a <=> $b } @$_;
-      ($a1 >= $b1 && $a1 <= $b2) ||
-      ($a2 >= $b1 && $a2 <= $b2) ||
-      ($a1 <= $b1 && $a2 >= $b2);
+      my ( $b1, $b2 ) = sort { $a <=> $b } @$_;
+      ( $a1 >= $b1 && $a1 <= $b2 )
+        || ( $a2 >= $b1 && $a2 <= $b2 )
+        || ( $a1 <= $b1 && $a2 >= $b2 );
     } @passed;
-    push @passed, [$a1, $a2] if not $conflict;
-    push @conflicts, [$a1, $a2] if $conflict;
+    push @passed,    [ $a1, $a2 ] if not $conflict;
+    push @conflicts, [ $a1, $a2 ] if $conflict;
   }
   return \@conflicts;
 }
@@ -73,25 +73,25 @@ sub parse_test_case {
 }
 
 sub sort_compare {
-  return ($a->[0] <=> $b->[0]) || ($a->[1] <=> $b->[1]);
+  return ( $a->[0] <=> $b->[0] ) || ( $a->[1] <=> $b->[1] );
 }
 
 sub compare_interval_sets {
-  my ($output, $compare) = @_;
-  if (reftype $output ne "ARRAY" || reftype $compare ne "ARRAY") {
+  my ( $output, $compare ) = @_;
+  if ( reftype $output ne "ARRAY" || reftype $compare ne "ARRAY" ) {
     print "Output not formatted correctly\n";
     return 0;
   }
   my $length = scalar @$output;
-  if ($length != scalar @$compare) {
+  if ( $length != scalar @$compare ) {
     return 0;
   }
-  my @sorted_output = sort sort_compare @$output;
+  my @sorted_output  = sort sort_compare @$output;
   my @sorted_compare = sort sort_compare @$compare;
-  for my $i (0 .. $length) {
-    my $test = $sorted_output[0];
+  for my $i ( 0 .. $length ) {
+    my $test   = $sorted_output[0];
     my $answer = $sorted_compare[0];
-    if ($test->[0] != $answer->[0] || $test->[1] != $answer->[1]) {
+    if ( $test->[0] != $answer->[0] || $test->[1] != $answer->[1] ) {
       return 0;
     }
   }
@@ -99,11 +99,11 @@ sub compare_interval_sets {
 }
 
 sub assert_conflicts {
-  my ($input, $output) = @_;
+  my ( $input, $output ) = @_;
   my $compare = find_conflict_intervals $input;
-  my $equal = compare_interval_sets $output, $compare;
+  my $equal   = compare_interval_sets $output, $compare;
   print color("green"), "Passed \x{2690}\n", color("reset") if $equal;
-  print color("red"), "Failed \x{2715}\n", color("reset") if not $equal;
+  print color("red"),   "Failed \x{2715}\n", color("reset") if not $equal;
 }
 
 # And our test runner
@@ -111,32 +111,34 @@ sub assert_conflicts {
 sub main {
   my $target = shift @ARGV // "../test_cases/ch2";
 
-  if (-e -r -f $target) {
-    my $json = parse_test_case $target;
-    my $input = %$json{"input"};
+  if ( -e -r -f $target ) {
+    my $json   = parse_test_case $target;
+    my $input  = %$json{"input"};
     my $output = %$json{"output"};
     print $target, ": ";
     assert_conflicts $input, $output;
     return;
-  } elsif (-e -r -d _) {
-    $target =~ s/^(.*?)\/?$/$1\//;     # check for trailing slash
+  }
+  elsif ( -e -r -d _ ) {
+    $target =~ s/^(.*?)\/?$/$1\//;    # check for trailing slash
     opendir my $dh, $target
       or die "Could not open '$target' - $!\n";
     my @entries = readdir $dh;
     foreach my $entry (@entries) {
-      if ($entry eq "." or $entry eq "..") {
+      if ( $entry eq "." or $entry eq ".." ) {
         next;
       }
-      my $path = $target . $entry;
-      my $json = parse_test_case $path;
-      my $input = %$json{"input"};
+      my $path   = $target . $entry;
+      my $json   = parse_test_case $path;
+      my $input  = %$json{"input"};
       my $output = %$json{"output"};
       print $path, ": ";
       assert_conflicts $input, $output;
     }
     closedir $dh;
     return;
-  } else {
+  }
+  else {
     print "No test files found\n";
   }
 }
