@@ -59,8 +59,8 @@ const readline = require('readline');
  **/
 
 function returnMirrorDates(
-  birthday,          // Input (birthdate)
-  today = new Date() // Optional 'today' arg to match example inputs for testing
+  birthday, // Input (birthdate)
+  today = new Date(), // Optional 'today' arg to match inputs for testing
 ) {
   const inputRe = /^\d{4}\/\d{2}\/\d{2}/;
   // Validate input
@@ -83,13 +83,13 @@ function returnMirrorDates(
       // Stringify and format
       prevDate.getFullYear(),
       String(prevDate.getMonth() + 1).padStart(2, '0'), // Padded for formatting
-      String(prevDate.getDate()).padStart(2, '0')
+      String(prevDate.getDate()).padStart(2, '0'),
     ].join('/'),
     [
       nextDate.getFullYear(),
       String(nextDate.getMonth() + 1).padStart(2, '0'),
-      String(nextDate.getDate()).padStart(2, '0')
-    ].join('/')
+      String(nextDate.getDate()).padStart(2, '0'),
+    ].join('/'),
   ];
 }
 
@@ -98,9 +98,12 @@ function returnMirrorDates(
  **/
 function printResults([prev, next] = []) {
   console.log(
-    'On the date you were born, someone who was your current age would have ' +
-    'been born on ' + prev + '.\n' + 'Someone born today will be your '       +
-    'current age on ' + next + '.'
+    `${
+      'On the date you were born, someone who was your current age would have' +
+      ' been born on '
+    }${prev}.\n` +
+      `Someone born today will be your ` +
+      `current age on ${next}.`,
   );
 }
 
@@ -120,22 +123,23 @@ function repl() {
     rl.on('line', (line) => {
       if (line === 'exit' || line === 'quit' || line === 'q' || line === 'n') {
         return rl.close();
-      } else if (line === 'y') {
+      }
+      if (line === 'y') {
         console.log(help);
-        rl.prompt();
-      } else if (!inputRe.test(line.trim())) {
+        return rl.prompt();
+      }
+      if (!inputRe.test(line.trim())) {
         console.log(`I don't recognize "${line}"`);
         console.log(help);
-        rl.prompt();
-      } else {
-        const results = returnMirrorDates(line);
-
-        printResults(results);
-        console.log('Go again? (y/n)');
+        return rl.prompt();
       }
+      const results = returnMirrorDates(line);
+
+      printResults(results);
+      return console.log('Go again? (y/n)');
     }).on('close', () => {
       console.log('Goodbye.');
-      resolve();
+      return resolve();
     });
   });
 }

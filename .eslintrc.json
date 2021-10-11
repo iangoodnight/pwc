@@ -1,10 +1,13 @@
 {
+  "env": {
+    "commonjs": true,
+    "es2021": true,
+    "node": true
+  },
   "extends": ["airbnb", "prettier"],
   "parserOptions": {
-    "sourceType": "script",
-    "ecmaFeatures": {
-      "impliedStrict": false
-    }
+    "ecmaVersion": 12,
+    "sourceType": "script"
   },
   "plugins": ["prettier"],
   "root": true,

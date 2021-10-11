@@ -52,36 +52,69 @@ use strict;
 use warnings;
 use utf8;
 use Time::Piece;
-use POSIX qw(strftime);
 use Data::Dumper;
 
+################################################################################
 # Our PWC Solution
+################################################################################
 
 sub return_mirror_dates {
   my $birthday = shift;
-  my $today = shift // time();
+  my $today    = shift // gmtime;
 
-  if (not $birthday =~ m{^\d{4}/[0-1][0-9]/[0-3][0-9]}m) {
+  if ( not $birthday =~ m{ \A \s* \d{4} / [0-1]\d / [0-3]\d \s* \z }x ) {
     return 0;
   }
-  
-  my $birthdate = Time::Piece->strptime($birthday, "%Y/%m/%d");
-  my $offset = abs($today - $birthdate);
-  
-  my @prev_date = gmtime($birthdate - $offset);
-  my @next_date = gmtime($today + $offset);
-  print Dumper @next_date;
 
-  return [
-    POSIX::strftime("%Y/%m/%d", @prev_date),
-    POSIX::strftime("%Y/%m/%d", @next_date)
-  ]
+  my $birthdate = Time::Piece->strptime( $birthday, '%Y/%m/%d' );
+  my $offset    = abs $today - $birthdate;
+  my $prev_date = gmtime( $birthdate - $offset );
+  my $next_date = gmtime( $today + $offset );
+
+  return [ $prev_date->ymd(q{/}), $next_date->ymd(q{/}) ];
 
 }
 
-main {
-  while (<>) {
-    chomp;
-    print Dumper return_mirror_dates($_);
+################################################################################
+# Utilities
+################################################################################
+
+sub print_results {
+  my ( $prev_date, $next_date ) = @{ +shift };
+  print 'On the date you were born, someone who was your current age would have'
+    . ' been born on '
+    . $prev_date . ".\n"
+    . 'Someone born today will be your current age on '
+    . $next_date . ".\n";
+  return;
+}
+
+################################################################################
+# Main
+################################################################################
+
+my $help = qq{Enter your birthdate (yyyy/MM/dd) or type "exit" to quit.\n/> };
+
+print $help;
+
+while ( my $input = <> ) {
+  chomp $input;
+
+  if ( $input =~ m/ \A \s* ( exit | quit | [qn] ) \s* \z /ix ) {
+    print "Goodbye.\n";
+    exit;
+  }
+
+  if ( $input =~ m/ \A \s* y \s* \z /ix ) {
+    print $help;
+  }
+
+  if ( $input =~ m{ \A \s* \d{4} / \d{2} / \d{2} \s* \z }ix ) {
+    my $dates = return_mirror_dates $input;
+    print_results $dates;
+    print "Go again? (y/n)\n/> ";
+  }
+  else {
+    print "I don't recognize $input\n$help";
   }
 }
