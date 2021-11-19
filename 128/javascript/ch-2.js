@@ -53,19 +53,28 @@ function platformsNeeded(arrivals = [], departures = []) {
   if (!Array.isArray(arrivals) || !Array.isArray(departures)) {
     return '`platformsNeeded` takes two arrays of time strings as arguments.';
   }
-  return [ // First, combine the arrays along with a key
-    ...arrivals.map(time => ['arrived', parseTime(time)]),
-    ...departures.map(time => ['departed', parseTime(time)])
-  ].sort(([, a], [ ,b ]) => { // Sort by time
-    if (a < b) return -1;
-    if (b < a) return 1;
-    return 0;
-  }).reduce(([current, highWaterMark], [type, time]) => { // find and return
-    if (type === 'arrived') current++;                    // highWaterMark
-    if (type === 'departed') current--;
-    if (current > highWaterMark) highWaterMark = current;
-    return [current, highWaterMark];
-  }, [0, 0]).pop();
+  return [
+    // First, combine the arrays along with a key
+    ...arrivals.map((time) => ['arrived', parseTime(time)]),
+    ...departures.map((time) => ['departed', parseTime(time)]),
+  ]
+    .sort(([, a], [, b]) => {
+      // Sort by time
+      if (a < b) return -1;
+      if (b < a) return 1;
+      return 0;
+    })
+    .reduce(
+      ([current, highWaterMark], [type, time]) => {
+        // find and return
+        if (type === 'arrived') current++; // highWaterMark
+        if (type === 'departed') current--;
+        if (current > highWaterMark) highWaterMark = current;
+        return [current, highWaterMark];
+      },
+      [0, 0],
+    )
+    .pop();
 }
 
 function parseTime(time = '') {
@@ -86,7 +95,7 @@ function parseTime(time = '') {
         : 0
       : 0;
 
-  return parseInt(hours) + (minutes/60) + pad;
+  return parseInt(hours) + minutes / 60 + pad;
 }
 
 /**
@@ -94,7 +103,7 @@ function parseTime(time = '') {
  **/
 
 function listToArray(str = '') {
-  return str.split(',').map(el => el.trim());
+  return str.split(',').map((el) => el.trim());
 }
 
 function parseTestCase(filePath = '') {
@@ -104,10 +113,10 @@ function parseTestCase(filePath = '') {
     const lines = data.split('\n');
 
     if (!lines.length) throw new Error('Test cases improperly formatted');
-    const testData = lines.filter((line) => {
-      return line.length !== 0 && line.charAt(0) !== '#';
-    });
-    const [ arrivalsString, departuresString, resultString ] = testData;
+    const testData = lines.filter(
+      (line) => line.length !== 0 && line.charAt(0) !== '#',
+    );
+    const [arrivalsString, departuresString, resultString] = testData;
 
     const arrivals = listToArray(arrivalsString);
 
@@ -145,16 +154,16 @@ const isDirectory = (filePath) => fs.lstatSync(filePath).isDirectory();
 
   try {
     if (isFile(testPath)) {
-      const [ arrivals, departures, result ] = parseTestCase(testPath);
+      const [arrivals, departures, result] = parseTestCase(testPath);
 
       console.log(testPath);
       return assertCorrectPlatforms(arrivals, departures, result);
     }
     if (isDirectory(testPath)) {
-      fs.readdirSync(testPath).map(fileName => {
+      fs.readdirSync(testPath).map((fileName) => {
         const filePath = path.join(testPath, fileName);
 
-        const [ arrivals, departures, result ] = parseTestCase(filePath);
+        const [arrivals, departures, result] = parseTestCase(filePath);
 
         console.log(filePath);
         assertCorrectPlatforms(arrivals, departures, result);

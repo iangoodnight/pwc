@@ -44,17 +44,17 @@ const path = require('path');
 function reduceToOddCount(input = []) {
   // First, reduce our input to a map of values and counts
   const mapped = input.reduce((counts, value) => {
-    if (counts && Object.prototype.hasOwnProperty.call(counts, '' + value)) {
-      counts['' + value] += 1;
+    if (counts && Object.prototype.hasOwnProperty.call(counts, `${value}`)) {
+      counts[`${value}`] += 1;
     } else {
-      counts['' + value] = 1;
+      counts[`${value}`] = 1;
     }
     return counts;
-  },{});
+  }, {});
   // Technically, our challenge states that there will only ever be one odd
   // input count, but, just for fun, we'll design it to return all odd counts
   // in the case that we get improperly validated input.
-  let odd = [];
+  const odd = [];
   for (const [key, value] of Object.entries(mapped)) {
     // Iterate through, pushing values with odd counts to our `odd` array
     if (value % 2 !== 0) {
@@ -84,8 +84,8 @@ function parseTestCase(filePath = '') {
   try {
     const data = fs.readFileSync(filePath, 'utf8');
 
-    const [ inputsArray, answersArray ] = data.split('\n')
-      .reduce(([inputs, tests], line) => {
+    const [inputsArray, answersArray] = data.split('\n').reduce(
+      ([inputs, tests], line) => {
         if (line.charAt(0) === '#' || line.length === 0) {
           return [inputs, tests];
         }
@@ -93,9 +93,10 @@ function parseTestCase(filePath = '') {
           tests.push(line.trim());
           return [inputs, tests];
         }
-        inputs.push(line.split(',').map(el => el.trim()));
+        inputs.push(line.split(',').map((el) => el.trim()));
         return [inputs, tests];
-      }, [[], []]
+      },
+      [[], []],
     );
 
     const { length: inputsLength } = inputsArray;
@@ -126,7 +127,6 @@ function assertMatch(input = [], expected) {
 
   // Handles singles results
   if (type === 'number' || type === 'string') {
-
     console.log('Expected: ', expected);
     console.log('Result: ', result);
 
@@ -137,8 +137,10 @@ function assertMatch(input = [], expected) {
   }
 
   if (type === 'object' && Array.isArray(result)) {
-    const answerArray = expected.split(',')
-      .map(el => el.trim()).sort();
+    const answerArray = expected
+      .split(',')
+      .map((el) => el.trim())
+      .sort();
 
     result.sort();
 
@@ -148,12 +150,12 @@ function assertMatch(input = [], expected) {
     const passed = answerArray.reduce((passes, answer, idx) => {
       if (answer !== result[idx]) passes = false;
       return passes;
-    }, true)
+    }, true);
 
     if (passed) return console.log('\x1b[32m%s\x1b[0m', 'Passed \u2690');
     return console.log('\x1b[31m%s\x1b[0m', 'Failed \u2715');
   }
-  return 'Problems asserting match.'
+  return 'Problems asserting match.';
 }
 
 const isFile = (filePath) => fs.lstatSync(filePath).isFile();
@@ -184,7 +186,7 @@ const isDirectory = (filePath) => fs.lstatSync(filePath).isDirectory();
     }
 
     if (isDirectory(testPath)) {
-      fs.readdirSync(testPath).map(fileName => {
+      fs.readdirSync(testPath).map((fileName) => {
         const filePath = path.join(testPath, fileName);
 
         const [inputs, tests] = parseTestCase(filePath);

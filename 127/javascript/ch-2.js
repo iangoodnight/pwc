@@ -41,39 +41,41 @@ const path = require('path');
 
 function findConflictIntervals(intervals = [[]]) {
   if (!Array.isArray(intervals)) return 'Input must be an 2-dimensional array';
-  const [conflicts, ] = intervals.reduce(([conflicts, passed], [ a1, a2 ]) => {
-    const start = a1 < a2 ? a1: a2;
+  const [conflicts] = intervals.reduce(
+    ([conflicts, passed], [a1, a2]) => {
+      const start = a1 < a2 ? a1 : a2;
 
-    const end = start === a1 ? a2: a1;
+      const end = start === a1 ? a2 : a1;
 
-    if (passed.length === 0) {
-      passed.push([start, end]);
+      if (passed.length === 0) {
+        passed.push([start, end]);
+        return [conflicts, passed];
+      }
+      const conflict = passed.reduce((isConflict, [b1, b2]) => {
+        if (
+          (start >= b1 && start <= b2) ||
+          (end >= b1 && end <= b2) ||
+          (start <= b1 && end >= b2)
+        ) {
+          return true;
+        }
+        return isConflict;
+      }, false);
+      if (conflict) {
+        conflicts.push([start, end]);
+      } else {
+        passed.push([start, end]);
+      }
       return [conflicts, passed];
-    }
-    const conflict = passed.reduce((isConflict, [ b1, b2 ]) => {
-      if (
-        (start >= b1 && start <= b2) ||
-        (end >= b1 && end <= b2) ||
-        (start <= b1 && end >= b2)
-      ) {
-        return true;
-      };
-      return isConflict;
-    }, false);
-    if (conflict) {
-      conflicts.push([start, end]);
-    } else {
-      passed.push([start, end]);
-    }
-    return [conflicts, passed]
-  }, [[], []]);
+    },
+    [[], []],
+  );
   return conflicts;
 }
 
 /**
  * Followed by some utilities to test our solution
  **/
-
 
 const isFile = (filePath) => fs.lstatSync(filePath).isFile();
 
@@ -89,17 +91,17 @@ function parseTestCase(filePath = '') {
   } catch (err) {
     console.log(
       'Problems parsing text files. Is the JSON properly formatted?',
-      err
+      err,
     );
   }
 }
 
 function sortIntervals(intervalsArr = [[]]) {
-  const intervalsSorted = intervalsArr.map(([x, y]) => {
-    return x > y ? [x, y]: [y, x];
-  });
+  const intervalsSorted = intervalsArr.map(([x, y]) =>
+    x > y ? [x, y] : [y, x],
+  );
   intervalsSorted.sort(([a1, a2], [b1, b2]) => {
-    if (a1 === b1) return b1 < b2 ? -1: b1 === b2 ? 0: 1;
+    if (a1 === b1) return b1 < b2 ? -1 : b1 === b2 ? 0 : 1;
     if (a1 < b1) return -1;
     return 1;
   });
@@ -114,7 +116,7 @@ function compareIntervalSets(set1 = [[]], set2 = [[]]) {
   const set2Sorted = sortIntervals(set2);
 
   return set1Sorted.reduce((equal, [a1, a2], idx) => {
-    const [ b1, b2 ] = set2Sorted[idx];
+    const [b1, b2] = set2Sorted[idx];
 
     return equal && a1 === b1 && a2 === b2;
   }, true);
@@ -147,7 +149,7 @@ function assertConflictIntervals(input = [[]], output = [[]], filePath = '') {
       return assertConflictIntervals(input, output, testPath);
     }
     if (isDirectory(testPath)) {
-      fs.readdirSync(testPath).map(fileName => {
+      fs.readdirSync(testPath).map((fileName) => {
         const filePath = path.join(testPath, fileName);
 
         const { input, output } = parseTestCase(filePath);

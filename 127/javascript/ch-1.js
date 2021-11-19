@@ -34,12 +34,12 @@ const path = require('path');
  **/
 
 function isDisjoint(set1 = [], set2 = []) {
-  const testSet = [...set1];           // shallow copy of the first set
+  const testSet = [...set1]; // shallow copy of the first set
 
-  let disjoint = true;                 // trust, but verify
+  let disjoint = true; // trust, but verify
   while (disjoint && testSet.length) {
     const test = testSet.pop();
-   if (set2.includes(test)) disjoint = false;
+    if (set2.includes(test)) disjoint = false;
   }
   return disjoint;
 }
@@ -60,17 +60,17 @@ function parseTestCase(filePath = '') {
 
     if (!lines.length) throw new Error('Test cases improperly formatted');
 
-    const testData = lines.filter((line) => {
-      return line.length !== 0 && line.charAt(0) !== '#';
-    });
+    const testData = lines.filter(
+      (line) => line.length !== 0 && line.charAt(0) !== '#',
+    );
 
-    const [ firstLine, secondLine, result ] = testData;
+    const [firstLine, secondLine, result] = testData;
 
     const set1 = listToArray(firstLine);
 
     const set2 = listToArray(secondLine);
 
-    const test = parseInt(result.trim()) === 1 ? true: false;
+    const test = parseInt(result.trim()) === 1;
 
     return [set1, set2, test];
   } catch (err) {
@@ -79,13 +79,13 @@ function parseTestCase(filePath = '') {
 }
 
 function listToArray(str) {
-  return str.split(',').map(el => el.trim());
+  return str.split(',').map((el) => el.trim());
 }
 
 function assertDisjoint([set1, set2, test], filePath = '') {
   const disjoint = isDisjoint(set1, set2);
 
-  const testPath = filePath !== '' ? `${filePath}: `: '';
+  const testPath = filePath !== '' ? `${filePath}: ` : '';
 
   if (disjoint === test) {
     return console.log(`${testPath}\x1b[32m%s\x1b[0m`, 'Passed \u2690');
@@ -107,7 +107,7 @@ function assertDisjoint([set1, set2, test], filePath = '') {
       return assertDisjoint(test, testPath);
     }
     if (isDirectory(testPath)) {
-      fs.readdirSync(testPath).map(fileName => {
+      fs.readdirSync(testPath).map((fileName) => {
         const filePath = path.join(testPath, fileName);
 
         const test = parseTestCase(filePath);

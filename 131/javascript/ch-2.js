@@ -58,7 +58,7 @@ function findPairs(delimiters = '', string = '') {
       if (idx % 2) return [open, [...close, el]];
       return [[...open, el], close];
     },
-    [[], []]
+    [[], []],
   );
   return [...string].reduce(
     ([open, close], el) => {
@@ -66,7 +66,7 @@ function findPairs(delimiters = '', string = '') {
       if (closeSet.includes(el)) close.push(el);
       return [open, close];
     },
-    [[], []]
+    [[], []],
   );
 }
 
@@ -75,7 +75,7 @@ function findPairs(delimiters = '', string = '') {
  **/
 
 function printResults(results = [[]]) {
-  results.forEach(result => {
+  results.forEach((result) => {
     console.log(result.join(''));
   });
 }
@@ -103,4 +103,3 @@ function printResults(results = [[]]) {
   }
   run();
 })();
-

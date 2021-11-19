@@ -35,28 +35,30 @@
 
 use strict;
 use warnings;
-use Data::Dumper;
 
-my @test1 = (1, 2, 3, 4, 5);
+my @test1 = ( 1, 2, 3, 4, 5 );
 
-my @test2 = (1, 3, 2, 4, 5);
+my @test2 = ( 1, 3, 2, 4, 5 );
 
 sub jort_sort {
   my @list = @{ +shift };
-  print Dumper @list;
 
-#  foreach my $idx (0 .. $#list) {
-#    print $list[$idx], "\n";
-#    if ($idx == $#list) {
-#      return 1;
-#    }
-#    if ($list[$idx] > $list[$idx + 1]) {
-#      return 0;
-#    }
-#  }
+  foreach my $idx ( 0 .. $#list ) {
+    if ( $idx == $#list ) {
+      return 1;
+    }
+    if ( $list[$idx] > $list[ $idx + 1 ] ) {
+      return 0;
+    }
+  }
+  return 0;
 }
 
-print Dumper \@test1;
+sub jort_sort_classic {
+  my @list = @{ +shift };
 
-print jort_sort(\@test1), "\n";
-print jort_sort(\@test2), "\n";
+
+}
+
+print jort_sort( \@test1 ), "\n";
+print jort_sort( \@test2 ), "\n";

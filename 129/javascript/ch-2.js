@@ -92,9 +92,10 @@ class LinkedList {
       });
     }
   }
+
   // Public Methods
   pop() {
-    let lastNode = this.getLast();
+    const lastNode = this.getLast();
     const { previous, value } = lastNode;
 
     if (previous) {
@@ -105,6 +106,7 @@ class LinkedList {
     }
     return value;
   }
+
   // For building our list
   push(value) {
     const tail = this.getLast();
@@ -116,6 +118,7 @@ class LinkedList {
     tail.next = { next: null, previous: tail, value };
     return this;
   }
+
   // To find the tail
   getLast() {
     let lastNode = this.head || {};
@@ -126,6 +129,7 @@ class LinkedList {
     }
     return lastNode;
   }
+
   // To rebuild our new list
   unshift(value) {
     const newHead = { next: this.head || null, previous: null, value };
@@ -134,16 +138,18 @@ class LinkedList {
     this.head = newHead;
     return this;
   }
+
   // Just for fun
   size() {
     let count = 0;
     let node = this.head;
-    while(node) {
+    while (node) {
       count++;
       node = node.next;
     }
     return count;
   }
+
   // Our PWC Solution
   sumLists(linkedList) {
     const summedList = new LinkedList();
@@ -152,8 +158,8 @@ class LinkedList {
     while (this.head || linkedList.head) {
       // This is desctructive, and maybe not the best approach
       // might be worth refactoring later
-      const thisVal = this.pop() || 0,
-            thatVal = linkedList.pop() || 0;
+      const thisVal = this.pop() || 0;
+      const thatVal = linkedList.pop() || 0;
       const summed = thisVal + thatVal + carried;
 
       if (summed >= 10) {
@@ -168,6 +174,7 @@ class LinkedList {
     }
     return summedList;
   }
+
   // To print our lists like in the example
   toString() {
     let node = this.head;
@@ -189,17 +196,17 @@ function parseTestCase(filePath = '') {
   try {
     const data = fs.readFileSync(filePath, 'utf8');
 
-    const lines = data.split('\n').filter((line) => {
-      return line.length !== 0 && line.charAt(0) !== '#';
-    });
+    const lines = data
+      .split('\n')
+      .filter((line) => line.length !== 0 && line.charAt(0) !== '#');
 
     if (!lines.length) throw new Error('Test case unreadable at: ', filePath);
 
     const [first, second, test] = lines;
 
-    const firstList = first.split(' -> ').map(el => parseInt(el));
+    const firstList = first.split(' -> ').map((el) => parseInt(el));
 
-    const secondList = second.split(' -> ').map(el => parseInt(el));
+    const secondList = second.split(' -> ').map((el) => parseInt(el));
 
     if (!firstList.length || !secondList.length) {
       throw new Error('Problems parsing test cases at: ', filePath);
@@ -208,7 +215,7 @@ function parseTestCase(filePath = '') {
 
     const secondLinkedList = new LinkedList(secondList);
 
-    return [ firstLinkedList, secondLinkedList, test ];
+    return [firstLinkedList, secondLinkedList, test];
   } catch (error) {
     console.log(error);
     process.exit(1);
@@ -241,7 +248,7 @@ const isDirectory = (filePath) => fs.lstatSync(filePath).isDirectory();
 
   try {
     if (isFile(testPath)) {
-      const [ firstList, secondList, expected ] = parseTestCase(testPath);
+      const [firstList, secondList, expected] = parseTestCase(testPath);
       console.log(firstList.toString());
       console.log(secondList.toString());
 
@@ -249,10 +256,10 @@ const isDirectory = (filePath) => fs.lstatSync(filePath).isDirectory();
       return assertMatch(firstList, secondList, expected);
     }
     if (isDirectory(testPath)) {
-      fs.readdirSync(testPath).map(fileName => {
+      fs.readdirSync(testPath).map((fileName) => {
         const filePath = path.join(testPath, fileName);
 
-        const [ firstList, secondList, expected ] = parseTestCase(filePath);
+        const [firstList, secondList, expected] = parseTestCase(filePath);
 
         console.log(filePath);
         assertMatch(firstList, secondList, expected);

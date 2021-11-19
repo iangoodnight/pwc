@@ -51,52 +51,55 @@ const path = require('path');
 const input = [
   [1, 0, 0, 0, 1, 0],
   [1, 1, 0, 0, 0, 1],
-  [1, 0, 0, 0, 0, 0]
+  [1, 0, 0, 0, 0, 0],
 ];
 
 const output = [
- [0, 0, 0],
- [0, 0, 0]
+  [0, 0, 0],
+  [0, 0, 0],
 ];
 
 function findSubMatrix(matrix = [[]]) {
-  let optimal = [0, 0];
-  let tests = [];
+  const optimal = [0, 0];
+  const tests = [];
   const area = ([x, y]) => x * y;
-  let contenders = [];
+  const contenders = [];
 
   for (let i = 0; i < matrix.length; i++) {
-    let test = matrix.slice(i);
+    const test = matrix.slice(i);
 
     for (let j = 0; j < matrix.length; j++) {
-      let testSlice = test.map(x => x.slice(j));
+      const testSlice = test.map((x) => x.slice(j));
       // console.log('test slice: ');
-      /*(() => {
+      /* (() => {
         testSlice.forEach(row => console.log(row, "\n"));
         // console.log('=======');
       })();*/
-      let champion = reduceToArea(reduceToX(testSlice));
+      const champion = reduceToArea(reduceToX(testSlice));
       // console.log('champion: ', champion, '\n\n');
       contenders.push(champion);
     }
   }
 
-  const kingOfTheHill = contenders.reduce((king, kid) => {
-    // console.log(king, ' vs ', kid);
-    if (area(king) > area(kid)) {
-      // console.log('Winner: ', king);
-      return king;
-    }
-    if (area(king) === area(kid)) {
-      if (king[0] < kid[0]) {
-        // console.log('Close one! ', kid);
-        return kid;
+  const kingOfTheHill = contenders.reduce(
+    (king, kid) => {
+      // console.log(king, ' vs ', kid);
+      if (area(king) > area(kid)) {
+        // console.log('Winner: ', king);
+        return king;
       }
-      // console.log('Close one!', king);
-    }
-    // console.log('Winner: ', kid);
-    return kid;
-  }, [0, 0]);
+      if (area(king) === area(kid)) {
+        if (king[0] < kid[0]) {
+          // console.log('Close one! ', kid);
+          return kid;
+        }
+        // console.log('Close one!', king);
+      }
+      // console.log('Winner: ', kid);
+      return kid;
+    },
+    [0, 0],
+  );
 
   // console.log(kingOfTheHill);
   return fillZeroes(kingOfTheHill);
@@ -113,12 +116,12 @@ function fillZeroes([length, count]) {
 }
 
 const test = [
-  [ 0, 0, 1 ],
-  [ 0, 0, 0 ],
-  [ 0, 1, 1 ],
+  [0, 0, 1],
+  [0, 0, 0],
+  [0, 1, 1],
 ];
 
-function reduceToLeft (list = [], match = 0) {
+function reduceToLeft(list = [], match = 0) {
   const test = [...list];
 
   let matched = 0;
@@ -129,34 +132,34 @@ function reduceToLeft (list = [], match = 0) {
   return matched;
 }
 
-function reduceToX (list = [[]], match = 0) {
+function reduceToX(list = [[]], match = 0) {
   return list.reduce((reduced, record) => {
     reduced.push(reduceToLeft(record, match));
     return reduced;
   }, []);
 }
 
-function reduceToArea (reducedX = []) {
+function reduceToArea(reducedX = []) {
   const xVals = [...reducedX];
 
   // console.log('xVals: ', xVals);
 
-  let highWaterMark = xVals.shift();
+  const highWaterMark = xVals.shift();
   if (highWaterMark < 1) return [0, 0];
   let y = 1;
 
   let optimal = [highWaterMark, y];
-  y++
+  y++;
 
   while (xVals.length > 0 && xVals[0] > 0) {
     // console.log('highWaterMark: ', highWaterMark);
-    let x = xVals.shift();
+    const x = xVals.shift();
     // console.log('x y: ', x, y);
 
     if (x >= highWaterMark) {
       optimal = [highWaterMark, y];
     }
-    if ((x * y) > (optimal[0] * optimal[1])) {
+    if (x * y > optimal[0] * optimal[1]) {
       optimal = [highWaterMark, y];
     }
     y++;
@@ -171,12 +174,11 @@ function creep(swamp = [[]]) {
   let yBound = 0;
 
   if (swamp[xBound][yBound] === 0) {
-    let [x ,y] = area;
+    let [x, y] = area;
     x++;
     y++;
     xBound++;
     yBound++;
-
   }
 }
 
@@ -188,7 +190,7 @@ function find0Range(row = []) {
   return range;
 }
 
-function is2dArray (input) {
+function is2dArray(input) {
   if (!Array.isArray(input)) return false;
   return input.reduce((pass, test) => {
     if (pass === false || !Array.isArray(test)) pass = false;
@@ -210,7 +212,7 @@ function parseTestCase(filePath = '') {
   } catch (error) {
     console.log(
       'Problems parsing test files.  Is the JSON properly formatted?\n',
-      error
+      error,
     );
   }
 }

@@ -58,7 +58,7 @@ function reduceToConsecutive(input = []) {
     // Otherwise, pop off the last set for inspection.
     const lastSet = reduced.pop();
     // Take a copy of the last value.
-    const [ last ] = lastSet.slice(-1);
+    const [last] = lastSet.slice(-1);
     // if the last value is equal to one less than our current value, push it
     // to the last set and push our last set back into our `reduced` array.
     if (last === element - 1) {
@@ -82,12 +82,11 @@ function evalInput(input = '') {
     return input
       .replace(/\(|\)/g, '')
       .split(/\s*,\s*/)
-      .map((element) => parseInt(element)
-    );
+      .map((element) => parseInt(element));
   }
   // Else, answer string, parse and return
-  return [...input.matchAll(/\[([^\]]*)\]/g)].map(match =>
-    match[1].split(/\s*,\s*/).map(el => parseInt(el))
+  return [...input.matchAll(/\[([^\]]*)\]/g)].map((match) =>
+    match[1].split(/\s*,\s*/).map((el) => parseInt(el)),
   );
 }
 
@@ -95,7 +94,7 @@ function parseTestCase(filePath = '') {
   try {
     const data = fs.readFileSync(filePath, 'utf8');
 
-    const [ inputsArray, answersArray ] = data.split('\n').reduce(
+    const [inputsArray, answersArray] = data.split('\n').reduce(
       ([inputs, tests], line) => {
         const trimmed = line.trim();
         // Discard comments and blank lines
@@ -109,7 +108,7 @@ function parseTestCase(filePath = '') {
         // else, push parsed to inputs
         return [[...inputs, parsed], tests];
       },
-      [[], []]
+      [[], []],
     );
     // Grab lengths for comparison conveniences
     const { length: inputLength } = inputsArray;
@@ -122,8 +121,8 @@ function parseTestCase(filePath = '') {
       inputLength !== answerLength
     ) {
       // Something went wrong parsing the test cases
-      throw new Error (
-        `Found ${inputLength} inputs and ${answerLength} answers.`
+      throw new Error(
+        `Found ${inputLength} inputs and ${answerLength} answers.`,
       );
     }
     return [inputsArray, answersArray];
@@ -182,25 +181,24 @@ const isDirectory = (filePath) => fs.lstatSync(filePath).isDirectory();
   // Handle single file inputs
   try {
     if (isFile(testPath)) {
-      const [ inputs, tests ] = parseTestCase(testPath);
+      const [inputs, tests] = parseTestCase(testPath);
 
       return printResults(testPath, inputs, tests);
       // Else, handle directory inputs
-    } else if (isDirectory(testPath)) {
-      fs.readdirSync(testPath).forEach(fileName => {
+    }
+    if (isDirectory(testPath)) {
+      fs.readdirSync(testPath).forEach((fileName) => {
         const filePath = path.join(testPath, fileName);
 
-        const [ inputs, tests ] = parseTestCase(filePath);
+        const [inputs, tests] = parseTestCase(filePath);
 
         printResults(filePath, inputs, tests);
         // Else, no tests found
       });
       return;
-    } else {
-      console.log('No tests found');
     }
+    console.log('No tests found');
   } catch (error) {
     console.log('Something went wrong: ', error);
   }
 })();
-
