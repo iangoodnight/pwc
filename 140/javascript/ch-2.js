@@ -26,7 +26,7 @@
  *
  *  1 2 2 3 4 6
  *
- * Now the 4th element in thye table is "3".
+ * Now the 4th element in the table is "3".
  * ```
  *
  * **Example 2**
@@ -51,14 +51,30 @@
 
 'use strict';
 
-function sortedMultiplicationTable(x, y) {
-  const sums = [];
-
-  let factor = 1;
-
-  while (factor < x) {
-    sums.push(x * factor);
-    factor += 1;
-  }
-
+function pwcMultiplicationTable(i, j, k) {
+  return sortedMultiplicationTable(i, j)[k - 1];
 }
+
+function sortedMultiplicationTable(x, y) {
+  const xFactors = range(x);
+
+  const yFactors = range(y);
+
+  return xFactors.reduce((sums, factor) => {
+    yFactors.forEach((y) => {
+      sums.push(y * factor);
+    });
+    return sums;
+  }, []).sort((a, b) => a - b);
+}
+
+function range(length, start = 1) {
+  return [...Array(length).keys()].map(i => i + start);
+}
+
+(function main() {
+  console.log('Input: $i = 2; $j = 3; $k = 4');
+  console.log(`Output: ${pwcMultiplicationTable(2, 3, 4)}`);
+  console.log('Input: $i = 3; $j = 3; $k = 6');
+  console.log(`Output: ${pwcMultiplicationTable(3, 3, 6)}`);
+})();
