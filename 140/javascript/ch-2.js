@@ -60,16 +60,18 @@ function sortedMultiplicationTable(x, y) {
 
   const yFactors = range(y);
 
-  return xFactors.reduce((sums, factor) => {
-    yFactors.forEach((y) => {
-      sums.push(y * factor);
-    });
-    return sums;
-  }, []).sort((a, b) => a - b);
+  return xFactors
+    .reduce((sums, factor) => {
+      yFactors.forEach((y) => {
+        sums.push(y * factor);
+      });
+      return sums;
+    }, [])
+    .sort((a, b) => a - b);
 }
 
 function range(length, start = 1) {
-  return [...Array(length).keys()].map(i => i + start);
+  return [...Array(length).keys()].map((i) => i + start);
 }
 
 (function main() {

@@ -43,13 +43,13 @@ function findDivisors(n) {
   let num = 24;
   console.log(
     '\x1b[33m%s\x1b[0m',
-    'Find the lowest 10 positive integers having exactly 8 divisors.'
+    'Find the lowest 10 positive integers having exactly 8 divisors.',
   );
-  while(passed < 8) {
+  while (passed < 8) {
     const divisors = findDivisors(num);
 
     if (divisors.length === 8) {
-      const formatted = divisors.map(n => String(n).padStart(2, ' '));
+      const formatted = divisors.map((n) => String(n).padStart(2, ' '));
 
       console.log(`\x1b[32m${num}\x1b[0m: ${formatted.join(', ')}`);
       passed++;

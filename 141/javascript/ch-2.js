@@ -49,7 +49,7 @@ function likeNumbers(num) {
 
   const like = [];
 
-  let i = 0;
+  const i = 0;
 
   // moving splice
 }
