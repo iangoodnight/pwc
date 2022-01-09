@@ -1,5 +1,5 @@
 #!/usr/bin/ruby -w
-## ch-1.rb
+# ch-1.rb
 
 # > https://theweeklychallenge.org/blog/perl-weekly-challenge-145/
 #

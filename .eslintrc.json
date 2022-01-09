@@ -14,6 +14,12 @@
   "rules": {
     "no-console": "off",
     "prettier/prettier": ["error"],
+    "max-len": [
+      "error",
+      {
+        "code": 80
+      }
+    ],
     "spaced-comment": [
       "error",
       "always",
