@@ -16,22 +16,29 @@
 
 'use strict';
 
-function fizzBuzz(l = 20) {
-  return [...Array(parseInt(l, 10))]
-    .map((_, i) => i + 1)
+// turn off some eslint-rules to allow for a good one-liner (non-readable)
+/* eslint-disable no-param-reassign, no-plusplus, no-nested-ternary */
+
+/** return a 'fizzbuzz' string comprised of numbers 1 through 20
+ * @function
+ * @param {number} [l=20] - input range limit
+ */
+const fizzBuzz = (l = 20) =>
+  [...Array(parseInt(l, 10)).keys()]
     .map((x) =>
-      x % 15 === 0
+      ++x % 15 === 0
         ? 'fizzbuzz'
         : x % 5 === 0
         ? 'buzz'
         : x % 3 === 0
         ? 'fizz'
         : x,
-    );
-}
+    )
+    .join(' ');
 
 (function main() {
+  // wrapped in main to allow for arguments
   const [, , length] = process.argv;
 
-  console.log(fizzBuzz(length).join(' '));
+  console.log(fizzBuzz(length));
 })();
