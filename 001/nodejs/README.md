@@ -3,10 +3,10 @@
 I had been looking for an excuse to brush up on some languages I don't get the
 chance to use often (ruby, python, maybe more to come), and I figured I might as
 well see if I can catch up on some of the first **Weekly Challenges** hosted by
-the [Perl Weekly Challenge Club][0].  So without further ado, here are my
+the [Perl Weekly Challenge Club][1].  So without further ado, here are my
 `nodejs` solutions for **Week 1** of the PWC.
 
-## Challenge 1
+## [Challenge 1][1]
 
 > Write a script to replace the `e` with `E` in the string `Perl Weekly
 > Challenge`. Also, print the number of times the character `e` is found in the
@@ -64,7 +64,7 @@ PErl WEEkly ChallEngE
 Count: 5
 ```
 
-## Challenge 2
+## [Challenge 2][1]
 
 > Write a one-liner to solve the *FizzBuzz* problem and print the numbers 1
 > through 20.  However, any number divisible by *3* should be replaced by the
