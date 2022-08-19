@@ -26,8 +26,7 @@ Challenge  | Nodejs  | Perl    | Python  | Ruby    | README
 [146] ch-1 | &#9745; | &#9745; | &#9888; | &#9745; | &#9888;
 
 [The Weekly Challenge]: https://theweeklychallenge.org/
-
-[The Weekly Challenge]: https://theweeklychallenge.org/
+[001]: https://theweeklychallenge.org/blog/perl-weekly-challenge-001/
 [127]: https://theweeklychallenge.org/blog/perl-weekly-challenge-127/
 [128]: https://theweeklychallenge.org/blog/perl-weekly-challenge-128/
 [129]: https://theweeklychallenge.org/blog/perl-weekly-challenge-129/
