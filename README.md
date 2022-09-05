@@ -25,6 +25,7 @@ Challenge | Nodejs  | Perl    | Python  | Ruby    | README
 [146] #1  | &#9745; | &#9745; | &#9745; | &#9745; | &#9888;
 [146] #1  | &#9745; | &#9745; | &#9888; | &#9745; | &#9888;
 [179] #1  | &#9745; | &#9888; | &#9888; | &#9888; | &#9888;
+[180] #1  | &#9745; | &#9888; | &#9888; | &#9888; | &#9888;
 
 [The Weekly Challenge]: https://theweeklychallenge.org/
 [001]: https://theweeklychallenge.org/blog/perl-weekly-challenge-001/
@@ -38,3 +39,4 @@ Challenge | Nodejs  | Perl    | Python  | Ruby    | README
 [145]: https://theweeklychallenge.org/blog/perl-weekly-challenge-145/
 [146]: https://theweeklychallenge.org/blog/perl-weekly-challenge-146/
 [179]: https://theweeklychallenge.org/blog/perl-weekly-challenge-179/
+[180]: https://theweeklychallenge.org/blog/perl-weekly-challenge-180/
