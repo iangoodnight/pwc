@@ -22,7 +22,7 @@
  * Output: 1 as 'o' is the first unique character
  * ```
  *
- * [1]: <https://theweeklychallenge.org/blog/perl-weekly-challenge-179/> "PWC"
+ * [1]: <https://theweeklychallenge.org/blog/perl-weekly-challenge-180/> "PWC"
  */
 
 'use strict';
