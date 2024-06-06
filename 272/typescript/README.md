@@ -118,7 +118,7 @@ function stringScore(str: string): number {
       const charCode: number = character.charCodeAt(0);
       const previousIndex: number = index - 1;
       const previousCharacter: string = characters[previousIndex] || '';
-      const previousCharCode: number = previousCharacter.charCodeAt(0);
+      const previousCharCode: number = previousCharacter.charCodeAt(0) || 0;
       const newScore: number = Math.abs(charCode - previousCharCode);
       return score + newScore;
     },
