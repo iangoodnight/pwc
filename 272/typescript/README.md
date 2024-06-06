@@ -29,6 +29,7 @@ Output: "255[.]101[.]1[.]0"
 ### Solution
 
 Nothing too earth-shattering [here][3]. Just a simple string replacement.
+Running `npm install` will install the necessary dependencies to run the tests.
 
 ```typescript
 function defangIpAddr(address: string): string {
@@ -125,6 +126,8 @@ function stringScore(str: string): number {
   );
 }
 ```
+
+Run `npm test task2` to verify.
 
 [1]: https://perlweeklychallenge.org/blog/perl-weekly-challenge-272/
 [2]: https://manwar.org/
