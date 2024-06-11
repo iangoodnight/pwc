@@ -116,7 +116,8 @@ Output: true
 We _could_ iterate over the characters in the string and keep track of the
 occurrence of `a` and `b`. If we find a `b` we set a flag to indicate that we
 have seen a `b`. If we find an `a` after the flag is set, we return `false`. It
-ends up being a little simpler to use a regular expression to match the pattern.
+ends up being a [little simpler][4] to use a regular expression to match the
+pattern.
 
 ```typescript
 function bAfterA(str: string): boolean {
